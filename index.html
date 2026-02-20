@@ -3,96 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D 2024 Auto-Character Creator</title>
+    <title>D&D 2024 Ultimate Creator</title>
     <style>
-        :root {
-            --primary: #e67e22;
-            --bg: #1a1a1a;
-            --card: #2c3e50;
-            --text: #ecf0f1;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
-        .container { width: 100%; max-width: 500px; background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444; }
-        h2 { text-align: center; color: var(--primary); margin-top: 0; text-transform: uppercase; letter-spacing: 2px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #bdc3c7; }
-        select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #34495e; color: white; font-size: 16px; outline: none; }
-        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        button:hover { background: #d35400; transform: translateY(-2px); }
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 25px; }
-        .stat-box { background: #1a1a1a; padding: 15px 5px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--primary); }
-        .label { font-size: 0.7em; text-transform: uppercase; color: #95a5a6; margin-bottom: 5px; }
-        .value { font-size: 1.8em; font-weight: bold; }
-        .modifier { font-size: 0.9em; color: var(--primary); display: block; }
+        :root { --primary: #e67e22; --bg: #1a1a1a; --card: #2c3e50; --text: #ecf0f1; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 550px; background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #444; }
+        h2 { text-align: center; color: var(--primary); text-transform: uppercase; margin-top: 0; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-size: 0.85em; color: #bdc3c7; }
+        select { width: 100%; padding: 10px; border-radius: 6px; background: #34495e; color: white; border: 1px solid #444; }
+        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .stat-box { background: #1a1a1a; padding: 10px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--primary); }
+        .label { font-size: 0.7em; text-transform: uppercase; color: #95a5a6; }
+        .value { font-size: 1.6em; font-weight: bold; }
+        .modifier { color: var(--primary); font-weight: bold; }
+        .traits-box { margin-top: 20px; background: #16212c; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.9em; }
+        .trait-title { color: var(--primary); font-weight: bold; margin-bottom: 5px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>2024 Character Generator</h2>
+    <h2>D&D 2024 Creator</h2>
     
     <div class="input-group">
-        <label>Character Class</label>
-        <select id="classSelect">
-            <option value="Barbarian">Barbarian (Str/Con)</option>
-            <option value="Bard">Bard (Cha/Dex)</option>
-            <option value="Cleric">Cleric (Wis/Con)</option>
-            <option value="Druid">Druid (Wis/Con)</option>
-            <option value="Fighter">Fighter (Str/Con)</option>
-            <option value="Monk">Monk (Dex/Wis)</option>
-            <option value="Paladin">Paladin (Str/Cha)</option>
-            <option value="Ranger">Ranger (Dex/Wis)</option>
-            <option value="Rogue">Rogue (Dex/Int)</option>
-            <option value="Sorcerer">Sorcerer (Cha/Con)</option>
-            <option value="Warlock">Warlock (Cha/Con)</option>
-            <option value="Wizard">Wizard (Int/Con)</option>
+        <label>Species</label>
+        <select id="speciesSelect">
+            <option value="Human">Human (Versatile/Resourceful)</option>
+            <option value="Elf">Elf (Darkvision/Fey Ancestry)</option>
+            <option value="Dwarf">Dwarf (Toughness/Stonecunning)</option>
+            <option value="Halfling">Halfling (Lucky/Brave)</option>
+            <option value="Dragonborn">Dragonborn (Breath Weapon/Flight)</option>
+            <option value="Goliath">Goliath (Giant Ancestry/Powerful Build)</option>
+            <option value="Orc">Orc (Adrenaline Rush/Endurance)</option>
+            <option value="Gnome">Gnome (Gnomish Cunning)</option>
+            <option value="Tiefling">Tiefling (Fiendish Legacy)</option>
+            <option value="Aasimar">Aasimar (Celestial Revelation)</option>
         </select>
     </div>
 
     <div class="input-group">
-        <label>Background (2024 Rules Bonuses)</label>
+        <label>Class</label>
+        <select id="classSelect">
+            <option value="Fighter">Fighter</option>
+            <option value="Rogue">Rogue</option>
+            <option value="Wizard">Wizard</option>
+            <option value="Cleric">Cleric</option>
+            <option value="Paladin">Paladin</option>
+            <option value="Barbarian">Barbarian</option>
+            <option value="Bard">Bard</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Background</label>
         <select id="bgSelect">
+            <option value="Soldier">Soldier (+Str, +Con)</option>
+            <option value="Sage">Sage (+Int, +Con)</option>
             <option value="Acolyte">Acolyte (+Wis, +Cha)</option>
             <option value="Criminal">Criminal (+Dex, +Con)</option>
-            <option value="Sage">Sage (+Int, +Con)</option>
-            <option value="Soldier">Soldier (+Str, +Con)</option>
             <option value="Wayfarer">Wayfarer (+Dex, +Wis)</option>
         </select>
     </div>
 
-    <button onclick="generate()">AUTO-GENERATE STATS</button>
+    <button onclick="generate()">GENERATE CHARACTER</button>
 
     <div class="stat-grid">
-        <div class="stat-box"><div class="label">Strength</div><div class="value" id="str">-</div><div class="modifier" id="strMod"></div></div>
-        <div class="stat-box"><div class="label">Dexterity</div><div class="value" id="dex">-</div><div class="modifier" id="dexMod"></div></div>
-        <div class="stat-box"><div class="label">Constitution</div><div class="value" id="con">-</div><div class="modifier" id="conMod"></div></div>
-        <div class="stat-box"><div class="label">Intelligence</div><div class="value" id="int">-</div><div class="modifier" id="intMod"></div></div>
-        <div class="stat-box"><div class="label">Wisdom</div><div class="value" id="wis">-</div><div class="modifier" id="wisMod"></div></div>
-        <div class="stat-box"><div class="label">Charisma</div><div class="value" id="cha">-</div><div class="modifier" id="chaMod"></div></div>
+        <div class="stat-box"><div class="label">STR</div><div id="str" class="value">-</div><div id="strMod" class="modifier"></div></div>
+        <div class="stat-box"><div class="label">DEX</div><div id="dex" class="value">-</div><div id="dexMod" class="modifier"></div></div>
+        <div class="stat-box"><div class="label">CON</div><div id="con" class="value">-</div><div id="conMod" class="modifier"></div></div>
+        <div class="stat-box"><div class="label">INT</div><div id="int" class="value">-</div><div id="intMod" class="modifier"></div></div>
+        <div class="stat-box"><div class="label">WIS</div><div id="wis" class="value">-</div><div id="wisMod" class="modifier"></div></div>
+        <div class="stat-box"><div class="label">CHA</div><div id="cha" class="value">-</div><div id="chaMod" class="modifier"></div></div>
+    </div>
+
+    <div class="traits-box" id="traitsDisplay">
+        <span class="trait-title">Species Traits:</span>
+        <div id="traitsList">Click Generate to see your powers...</div>
     </div>
 </div>
 
 <script>
-    // Priorities based on 2024 optimized builds
-    const priorities = {
-        "Barbarian": ["str", "con", "dex", "wis", "cha", "int"],
-        "Bard": ["cha", "dex", "con", "wis", "int", "str"],
-        "Cleric": ["wis", "con", "str", "int", "cha", "dex"],
-        "Druid": ["wis", "con", "dex", "int", "cha", "str"],
-        "Fighter": ["str", "con", "dex", "wis", "cha", "int"],
-        "Monk": ["dex", "wis", "con", "str", "cha", "int"],
-        "Paladin": ["str", "cha", "con", "wis", "dex", "int"],
-        "Ranger": ["dex", "wis", "con", "str", "int", "cha"],
-        "Rogue": ["dex", "int", "con", "cha", "wis", "str"],
-        "Sorcerer": ["cha", "con", "dex", "int", "wis", "str"],
-        "Warlock": ["cha", "con", "dex", "int", "wis", "str"],
-        "Wizard": ["int", "con", "dex", "wis", "cha", "str"]
+    const speciesTraits = {
+        "Human": "Resourceful (Heroic Inspiration after Long Rest), Skillful, Versatile (Extra Origin Feat).",
+        "Elf": "Darkvision (60ft), Fey Ancestry, Keen Senses, Trance (4hr Long Rest).",
+        "Dwarf": "Darkvision (120ft), Dwarven Resilience, Dwarven Toughness (+1 HP per level), Stonecunning.",
+        "Halfling": "Brave, Halfling Nimbleness, Luck (Reroll 1s on D20), Naturally Stealthy.",
+        "Dragonborn": "Breath Weapon, Damage Resistance, Darkvision, Draconic Flight (at Level 5).",
+        "Goliath": "Giant Ancestry, Large Form (Level 5), Powerful Build, Speed 35ft.",
+        "Orc": "Adrenaline Rush (Dash as Bonus Action), Darkvision, Relentless Endurance.",
+        "Gnome": "Darkvision, Gnomish Cunning (Advantage on Int/Wis/Cha saves vs magic).",
+        "Tiefling": "Darkvision, Fiendish Legacy (Spells/Resistance), Otherworldly Presence.",
+        "Aasimar": "Celestial Resistance, Celestial Revelation (Level 3 wings/extra damage), Healing Hands."
     };
 
-    const bgBonuses = {
-        "Acolyte": ["wis", "cha"], "Criminal": ["dex", "con"],
-        "Sage": ["int", "con"], "Soldier": ["str", "con"], "Wayfarer": ["dex", "wis"]
+    const priorities = {
+        "Fighter": ["str", "con", "dex", "wis", "cha", "int"],
+        "Rogue": ["dex", "int", "con", "cha", "wis", "str"],
+        "Wizard": ["int", "con", "dex", "wis", "cha", "str"],
+        "Cleric": ["wis", "con", "str", "int", "cha", "dex"],
+        "Paladin": ["str", "cha", "con", "wis", "dex", "int"],
+        "Barbarian": ["str", "con", "dex", "wis", "cha", "int"],
+        "Bard": ["cha", "dex", "con", "wis", "int", "str"]
     };
+
+    const bgBonuses = { "Soldier": ["str", "con"], "Sage": ["int", "con"], "Acolyte": ["wis", "cha"], "Criminal": ["dex", "con"], "Wayfarer": ["dex", "wis"] };
 
     function roll4d6() {
         let rolls = Array.from({length: 4}, () => Math.floor(Math.random() * 6) + 1);
@@ -103,23 +119,23 @@
         let scores = Array.from({length: 6}, () => roll4d6()).sort((a, b) => b - a);
         let cls = document.getElementById("classSelect").value;
         let bg = document.getElementById("bgSelect").value;
+        let sp = document.getElementById("speciesSelect").value;
         
         let order = priorities[cls];
         let final = {};
         order.forEach((stat, i) => final[stat] = scores[i]);
 
-        // Apply Background Bonuses (+2 to first, +1 to second)
         final[bgBonuses[bg][0]] += 2;
         final[bgBonuses[bg][1]] += 1;
 
-        // Update UI
         for (let s in final) {
             let mod = Math.floor((final[s] - 10) / 2);
             document.getElementById(s).innerText = final[s];
             document.getElementById(s + "Mod").innerText = (mod >= 0 ? "+" : "") + mod;
         }
+
+        document.getElementById("traitsList").innerText = speciesTraits[sp];
     }
 </script>
-
 </body>
 </html>
