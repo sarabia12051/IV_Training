@@ -2,24 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D 2024 Ultimate Creator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>D&D 2024 Creator</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+
     <style>
         :root { --primary: #e67e22; --bg: #1a1a1a; --card: #2c3e50; --text: #ecf0f1; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
-        .container { width: 100%; max-width: 550px; background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #444; }
-        h2 { text-align: center; color: var(--primary); text-transform: uppercase; margin-top: 0; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px;
+            margin: 0;
+        }
+        .container { width: 100%; max-width: 550px; background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: var(--primary); text-transform: uppercase; margin-top: 0; letter-spacing: 1px; }
         .input-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-size: 0.85em; color: #bdc3c7; }
-        select { width: 100%; padding: 10px; border-radius: 6px; background: #34495e; color: white; border: 1px solid #444; }
-        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        select { width: 100%; padding: 12px; border-radius: 6px; background: #34495e; color: white; border: 1px solid #444; font-size: 16px; }
+        button { width: 100%; padding: 16px; background: var(--primary); border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        button:active { transform: scale(0.98); background: #d35400; }
         .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
         .stat-box { background: #1a1a1a; padding: 10px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--primary); }
         .label { font-size: 0.7em; text-transform: uppercase; color: #95a5a6; }
-        .value { font-size: 1.6em; font-weight: bold; }
-        .modifier { color: var(--primary); font-weight: bold; }
-        .traits-box { margin-top: 20px; background: #16212c; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.9em; }
-        .trait-title { color: var(--primary); font-weight: bold; margin-bottom: 5px; display: block; }
+        .value { font-size: 1.8em; font-weight: bold; margin: 2px 0; }
+        .modifier { color: var(--primary); font-weight: bold; font-size: 1em; }
+        .traits-box { margin-top: 20px; background: #16212c; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); font-size: 0.9em; min-height: 60px; }
+        .trait-title { color: var(--primary); font-weight: bold; margin-bottom: 5px; display: block; text-transform: uppercase; font-size: 0.8em; }
     </style>
 </head>
 <body>
@@ -30,16 +47,16 @@
     <div class="input-group">
         <label>Species</label>
         <select id="speciesSelect">
-            <option value="Human">Human (Versatile/Resourceful)</option>
-            <option value="Elf">Elf (Darkvision/Fey Ancestry)</option>
-            <option value="Dwarf">Dwarf (Toughness/Stonecunning)</option>
-            <option value="Halfling">Halfling (Lucky/Brave)</option>
-            <option value="Dragonborn">Dragonborn (Breath Weapon/Flight)</option>
-            <option value="Goliath">Goliath (Giant Ancestry/Powerful Build)</option>
-            <option value="Orc">Orc (Adrenaline Rush/Endurance)</option>
-            <option value="Gnome">Gnome (Gnomish Cunning)</option>
-            <option value="Tiefling">Tiefling (Fiendish Legacy)</option>
-            <option value="Aasimar">Aasimar (Celestial Revelation)</option>
+            <option value="Human">Human</option>
+            <option value="Elf">Elf</option>
+            <option value="Dwarf">Dwarf</option>
+            <option value="Halfling">Halfling</option>
+            <option value="Dragonborn">Dragonborn</option>
+            <option value="Goliath">Goliath</option>
+            <option value="Orc">Orc</option>
+            <option value="Gnome">Gnome</option>
+            <option value="Tiefling">Tiefling</option>
+            <option value="Aasimar">Aasimar</option>
         </select>
     </div>
 
@@ -53,6 +70,11 @@
             <option value="Paladin">Paladin</option>
             <option value="Barbarian">Barbarian</option>
             <option value="Bard">Bard</option>
+            <option value="Druid">Druid</option>
+            <option value="Monk">Monk</option>
+            <option value="Ranger">Ranger</option>
+            <option value="Sorcerer">Sorcerer</option>
+            <option value="Warlock">Warlock</option>
         </select>
     </div>
 
@@ -64,6 +86,8 @@
             <option value="Acolyte">Acolyte (+Wis, +Cha)</option>
             <option value="Criminal">Criminal (+Dex, +Con)</option>
             <option value="Wayfarer">Wayfarer (+Dex, +Wis)</option>
+            <option value="Farmer">Farmer (+Str, +Con)</option>
+            <option value="Merchant">Merchant (+Int, +Cha)</option>
         </select>
     </div>
 
@@ -80,22 +104,22 @@
 
     <div class="traits-box" id="traitsDisplay">
         <span class="trait-title">Species Traits:</span>
-        <div id="traitsList">Click Generate to see your powers...</div>
+        <div id="traitsList">Your powers will appear here...</div>
     </div>
 </div>
 
 <script>
     const speciesTraits = {
-        "Human": "Resourceful (Heroic Inspiration after Long Rest), Skillful, Versatile (Extra Origin Feat).",
-        "Elf": "Darkvision (60ft), Fey Ancestry, Keen Senses, Trance (4hr Long Rest).",
-        "Dwarf": "Darkvision (120ft), Dwarven Resilience, Dwarven Toughness (+1 HP per level), Stonecunning.",
-        "Halfling": "Brave, Halfling Nimbleness, Luck (Reroll 1s on D20), Naturally Stealthy.",
-        "Dragonborn": "Breath Weapon, Damage Resistance, Darkvision, Draconic Flight (at Level 5).",
-        "Goliath": "Giant Ancestry, Large Form (Level 5), Powerful Build, Speed 35ft.",
-        "Orc": "Adrenaline Rush (Dash as Bonus Action), Darkvision, Relentless Endurance.",
-        "Gnome": "Darkvision, Gnomish Cunning (Advantage on Int/Wis/Cha saves vs magic).",
-        "Tiefling": "Darkvision, Fiendish Legacy (Spells/Resistance), Otherworldly Presence.",
-        "Aasimar": "Celestial Resistance, Celestial Revelation (Level 3 wings/extra damage), Healing Hands."
+        "Human": "Resourceful (Inspiration), Skillful, Extra Origin Feat.",
+        "Elf": "Darkvision (60ft), Fey Ancestry, Keen Senses, Trance.",
+        "Dwarf": "Darkvision (120ft), Resistance, Toughness (+1 HP/lvl), Stonecunning.",
+        "Halfling": "Brave, Nimbleness, Luck (Reroll 1s), Naturally Stealthy.",
+        "Dragonborn": "Breath Weapon, Resistance, Darkvision, Flight (Lvl 5).",
+        "Goliath": "Giant Ancestry, Large Form (Lvl 5), Powerful Build, Speed 35ft.",
+        "Orc": "Adrenaline Rush (Dash as Bonus Action), Darkvision, Endurance.",
+        "Gnome": "Darkvision, Gnomish Cunning (Advantage on Magic Saves).",
+        "Tiefling": "Darkvision, Fiendish Legacy (Spells), Resistance.",
+        "Aasimar": "Resistance, Celestial Revelation (Wings/Damage), Healing Hands."
     };
 
     const priorities = {
@@ -105,10 +129,19 @@
         "Cleric": ["wis", "con", "str", "int", "cha", "dex"],
         "Paladin": ["str", "cha", "con", "wis", "dex", "int"],
         "Barbarian": ["str", "con", "dex", "wis", "cha", "int"],
-        "Bard": ["cha", "dex", "con", "wis", "int", "str"]
+        "Bard": ["cha", "dex", "con", "wis", "int", "str"],
+        "Druid": ["wis", "con", "dex", "int", "cha", "str"],
+        "Monk": ["dex", "wis", "con", "str", "cha", "int"],
+        "Ranger": ["dex", "wis", "con", "str", "int", "cha"],
+        "Sorcerer": ["cha", "con", "dex", "int", "wis", "str"],
+        "Warlock": ["cha", "con", "dex", "int", "wis", "str"]
     };
 
-    const bgBonuses = { "Soldier": ["str", "con"], "Sage": ["int", "con"], "Acolyte": ["wis", "cha"], "Criminal": ["dex", "con"], "Wayfarer": ["dex", "wis"] };
+    const bgBonuses = { 
+        "Soldier": ["str", "con"], "Sage": ["int", "con"], "Acolyte": ["wis", "cha"], 
+        "Criminal": ["dex", "con"], "Wayfarer": ["dex", "wis"], "Farmer": ["str", "con"],
+        "Merchant": ["int", "cha"]
+    };
 
     function roll4d6() {
         let rolls = Array.from({length: 4}, () => Math.floor(Math.random() * 6) + 1);
@@ -125,6 +158,7 @@
         let final = {};
         order.forEach((stat, i) => final[stat] = scores[i]);
 
+        // Apply 2024 Background Bonuses
         final[bgBonuses[bg][0]] += 2;
         final[bgBonuses[bg][1]] += 1;
 
