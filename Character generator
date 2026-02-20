@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 2024 Auto-Character Creator</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --bg: #1a1a1a;
+            --card: #2c3e50;
+            --text: #ecf0f1;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 500px; background: var(--card); padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444; }
+        h2 { text-align: center; color: var(--primary); margin-top: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #bdc3c7; }
+        select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #34495e; color: white; font-size: 16px; outline: none; }
+        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #d35400; transform: translateY(-2px); }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 25px; }
+        .stat-box { background: #1a1a1a; padding: 15px 5px; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--primary); }
+        .label { font-size: 0.7em; text-transform: uppercase; color: #95a5a6; margin-bottom: 5px; }
+        .value { font-size: 1.8em; font-weight: bold; }
+        .modifier { font-size: 0.9em; color: var(--primary); display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>2024 Character Generator</h2>
+    
+    <div class="input-group">
+        <label>Character Class</label>
+        <select id="classSelect">
+            <option value="Barbarian">Barbarian (Str/Con)</option>
+            <option value="Bard">Bard (Cha/Dex)</option>
+            <option value="Cleric">Cleric (Wis/Con)</option>
+            <option value="Druid">Druid (Wis/Con)</option>
+            <option value="Fighter">Fighter (Str/Con)</option>
+            <option value="Monk">Monk (Dex/Wis)</option>
+            <option value="Paladin">Paladin (Str/Cha)</option>
+            <option value="Ranger">Ranger (Dex/Wis)</option>
+            <option value="Rogue">Rogue (Dex/Int)</option>
+            <option value="Sorcerer">Sorcerer (Cha/Con)</option>
+            <option value="Warlock">Warlock (Cha/Con)</option>
+            <option value="Wizard">Wizard (Int/Con)</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Background (2024 Rules Bonuses)</label>
+        <select id="bgSelect">
+            <option value="Acolyte">Acolyte (+Wis, +Cha)</option>
+            <option value="Criminal">Criminal (+Dex, +Con)</option>
+            <option value="Sage">Sage (+Int, +Con)</option>
+            <option value="Soldier">Soldier (+Str, +Con)</option>
+            <option value="Wayfarer">Wayfarer (+Dex, +Wis)</option>
+        </select>
+    </div>
+
+    <button onclick="generate()">AUTO-GENERATE STATS</button>
+
+    <div class="stat-grid">
+        <div class="stat-box"><div class="label">Strength</div><div class="value" id="str">-</div><div class="modifier" id="strMod"></div></div>
+        <div class="stat-box"><div class="label">Dexterity</div><div class="value" id="dex">-</div><div class="modifier" id="dexMod"></div></div>
+        <div class="stat-box"><div class="label">Constitution</div><div class="value" id="con">-</div><div class="modifier" id="conMod"></div></div>
+        <div class="stat-box"><div class="label">Intelligence</div><div class="value" id="int">-</div><div class="modifier" id="intMod"></div></div>
+        <div class="stat-box"><div class="label">Wisdom</div><div class="value" id="wis">-</div><div class="modifier" id="wisMod"></div></div>
+        <div class="stat-box"><div class="label">Charisma</div><div class="value" id="cha">-</div><div class="modifier" id="chaMod"></div></div>
+    </div>
+</div>
+
+<script>
+    // Priorities based on 2024 optimized builds
+    const priorities = {
+        "Barbarian": ["str", "con", "dex", "wis", "cha", "int"],
+        "Bard": ["cha", "dex", "con", "wis", "int", "str"],
+        "Cleric": ["wis", "con", "str", "int", "cha", "dex"],
+        "Druid": ["wis", "con", "dex", "int", "cha", "str"],
+        "Fighter": ["str", "con", "dex", "wis", "cha", "int"],
+        "Monk": ["dex", "wis", "con", "str", "cha", "int"],
+        "Paladin": ["str", "cha", "con", "wis", "dex", "int"],
+        "Ranger": ["dex", "wis", "con", "str", "int", "cha"],
+        "Rogue": ["dex", "int", "con", "cha", "wis", "str"],
+        "Sorcerer": ["cha", "con", "dex", "int", "wis", "str"],
+        "Warlock": ["cha", "con", "dex", "int", "wis", "str"],
+        "Wizard": ["int", "con", "dex", "wis", "cha", "str"]
+    };
+
+    const bgBonuses = {
+        "Acolyte": ["wis", "cha"], "Criminal": ["dex", "con"],
+        "Sage": ["int", "con"], "Soldier": ["str", "con"], "Wayfarer": ["dex", "wis"]
+    };
+
+    function roll4d6() {
+        let rolls = Array.from({length: 4}, () => Math.floor(Math.random() * 6) + 1);
+        return rolls.sort().slice(1).reduce((a, b) => a + b, 0);
+    }
+
+    function generate() {
+        let scores = Array.from({length: 6}, () => roll4d6()).sort((a, b) => b - a);
+        let cls = document.getElementById("classSelect").value;
+        let bg = document.getElementById("bgSelect").value;
+        
+        let order = priorities[cls];
+        let final = {};
+        order.forEach((stat, i) => final[stat] = scores[i]);
+
+        // Apply Background Bonuses (+2 to first, +1 to second)
+        final[bgBonuses[bg][0]] += 2;
+        final[bgBonuses[bg][1]] += 1;
+
+        // Update UI
+        for (let s in final) {
+            let mod = Math.floor((final[s] - 10) / 2);
+            document.getElementById(s).innerText = final[s];
+            document.getElementById(s + "Mod").innerText = (mod >= 0 ? "+" : "") + mod;
+        }
+    }
+</script>
+
+</body>
+</html>
