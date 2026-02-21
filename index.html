@@ -12,7 +12,6 @@
         :root { --primary: #2e7d32; --gold: #fbc02d; --bg: #0a0f0b; --card: #1b261e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e8f5e9; display: flex; justify-content: center; padding: 10px; margin: 0; }
         
-        /* Fixed boundary issues and centered content */
         .container { 
             background: var(--card); 
             padding: 25px; 
@@ -21,7 +20,7 @@
             width: 100%; 
             max-width: 420px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
-            box-sizing: border-box; /* Ensures padding doesn't push width out */
+            box-sizing: border-box; 
         }
 
         .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
@@ -31,7 +30,6 @@
         button { background: var(--primary); border: none; padding: 16px; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1.1rem; }
         .hidden { display: none; }
 
-        /* Adjusted padding and width to keep arrows and text inside boundaries */
         select, input { 
             width: 100%; 
             padding: 12px 15px; 
@@ -42,21 +40,20 @@
             border-radius: 8px; 
             font-size: 1rem; 
             box-sizing: border-box; 
-            appearance: none; /* Helps with custom arrow positioning on some phones */
+            appearance: none; 
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232e7d32%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 15px top 50%;
             background-size: 12px auto;
         }
         
-        input { background-image: none; } /* No arrow for the name box */
+        input { background-image: none; }
 
         #modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); padding: 25px; border: 3px solid var(--gold); border-radius: 15px; z-index: 100; width: 85%; max-width: 350px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99; }
         .feature-item { margin-bottom: 10px; padding: 12px; border-left: 4px solid var(--gold); background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.9em; }
         .feature-item b { color: var(--gold); display: block; margin-bottom: 4px; }
         
-        /* Updated Header Text */
         .header-title { color: var(--primary); text-align: center; margin-bottom: 20px; font-size: 2.2em; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; }
     </style>
 </head>
@@ -66,22 +63,29 @@
     <div class="header-title">RANGER</div>
     <input type="text" id="char-name" placeholder="Character Name...">
     
-    <label style="font-size: 0.9em; color: var(--primary); font-weight: bold;">CHOOSE RACE</label>
+    <label style="font-size: 0.8em; color: var(--primary); font-weight: bold;">SELECT LINEAGE</label>
     <select id="race-select">
         <option value="Human">Human (+1 All Stats)</option>
         <option value="Elf">Elf (+2 Dex, Darkvision)</option>
         <option value="Wood Elf">Wood Elf (+2 Dex, +1 Wis)</option>
-        <option value="Dwarf">Dwarf (+2 Con, Resilient)</option>
+        <option value="Dwarf">Dwarf (+2 Con, Tough)</option>
+        <option value="Halfling">Halfling (+2 Dex, Lucky)</option>
+        <option value="Gnome">Gnome (+2 Int, Cunning)</option>
+        <option value="Dragonborn">Dragonborn (+2 Str, +1 Cha)</option>
+        <option value="Tiefling">Tiefling (+2 Cha, +1 Int)</option>
         <option value="Half-Orc">Half-Orc (+2 Str, +1 Con)</option>
+        <option value="Aasimar">Aasimar (+2 Cha, +1 Wis)</option>
     </select>
 
-    <label style="font-size: 0.9em; color: var(--primary); font-weight: bold;">CHOOSE BACKGROUND</label>
+    <label style="font-size: 0.8em; color: var(--primary); font-weight: bold;">SELECT BACKGROUND</label>
     <select id="bg-select">
         <option value="Wayfarer">Wayfarer (Feat: Alert)</option>
         <option value="Soldier">Soldier (Feat: Savage Attacker)</option>
         <option value="Acolyte">Acolyte (Feat: Magic Initiate)</option>
         <option value="Criminal">Criminal (Feat: Alert)</option>
         <option value="Outlander">Outlander (Feat: Tough)</option>
+        <option value="Sage">Sage (Feat: Magic Initiate)</option>
+        <option value="Noble">Noble (Feat: Skilled)</option>
     </select>
 
     <button onclick="generateCharacter()">GENERATE HUNTER</button>
@@ -126,7 +130,7 @@
         "ASI": { title: "Stat Increase", options: { "DEX": "Dexterity +2", "WIS": "Wisdom +2", "CON": "Constitution +2" }}
     };
 
-    const bgFeats = { "Wayfarer": "Alert", "Soldier": "Savage Attacker", "Acolyte": "Magic Initiate", "Criminal": "Alert", "Outlander": "Tough" };
+    const bgFeats = { "Wayfarer": "Alert", "Soldier": "Savage Attacker", "Acolyte": "Magic Initiate", "Criminal": "Alert", "Outlander": "Tough", "Sage": "Magic Initiate", "Noble": "Skilled" };
 
     function rollStat() {
         let rolls = [rand(6), rand(6), rand(6), rand(6)];
@@ -144,14 +148,20 @@
             stats: { STR: rollStat(), DEX: rollStat(), CON: rollStat(), INT: rollStat(), WIS: rollStat(), CHA: rollStat() },
             feats: [{name: "Origin Feat: " + bgFeats[b], text: "Specialized training from your background."}]
         };
+        
+        // Comprehensive Race Logic
         if(r === "Human") Object.keys(hero.stats).forEach(s => hero.stats[s]++);
-        if(r.includes("Elf")) hero.stats.DEX += 2;
-        if(r === "Wood Elf") hero.stats.WIS++;
+        if(r.includes("Elf") || r === "Halfling") hero.stats.DEX += 2;
+        if(r === "Wood Elf" || r === "Aasimar") hero.stats.WIS += 1;
         if(r === "Dwarf") hero.stats.CON += 2;
-        if(r === "Half-Orc") { hero.stats.STR += 2; hero.stats.CON++; }
+        if(r === "Gnome") hero.stats.INT += 2;
+        if(r === "Dragonborn") { hero.stats.STR += 2; hero.stats.CHA += 1; }
+        if(r === "Tiefling") { hero.stats.CHA += 2; hero.stats.INT += 1; }
+        if(r === "Half-Orc") { hero.stats.STR += 2; hero.stats.CON += 1; }
+        if(r === "Aasimar") hero.stats.CHA += 2;
 
         hero.maxHP = 10 + Math.floor((hero.stats.CON-10)/2);
-        if(b === "Outlander") hero.maxHP += 2;
+        if(b === "Outlander" || r === "Dwarf") hero.maxHP += 2;
         hero.currentHP = hero.maxHP;
         hero.feats.push({name: "Favored Enemy", text: "Expertise in tracking foes."});
         save();
