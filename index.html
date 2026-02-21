@@ -151,14 +151,26 @@
     function generateCharacter() {
         let r = document.getElementById('race-select').value;
         let b = document.getElementById('bg-select').value;
+        
+        // ROLL AND SORT STATS FOR RANGER PRIORITY
+        let rolls = [rollStat(), rollStat(), rollStat(), rollStat(), rollStat(), rollStat()];
+        rolls.sort((a, b) => b - a); // Sort High to Low
+
         hero = {
             name: document.getElementById('char-name').value || "Strider",
             race: r, bg: b, level: 1, prof: 2,
-            stats: { STR: rollStat(), DEX: rollStat(), CON: rollStat(), INT: rollStat(), WIS: rollStat(), CHA: rollStat() },
+            stats: { 
+                DEX: rolls[0], // Highest to Dexterity
+                WIS: rolls[1], // 2nd to Wisdom
+                CON: rolls[2], // 3rd to Constitution
+                STR: rolls[3], 
+                INT: rolls[4], 
+                CHA: rolls[5] 
+            },
             feats: [{name: "Origin Feat: " + bgFeats[b], text: "Specialized training from your background."}]
         };
         
-        // Full Race Logic Restored
+        // Apply Bonuses
         if(r === "Human") Object.keys(hero.stats).forEach(s => hero.stats[s]++);
         if(r.includes("Elf") || r === "Halfling") hero.stats.DEX += 2;
         if(r === "Wood Elf" || r === "Aasimar") hero.stats.WIS += 1;
@@ -170,7 +182,6 @@
         if(r === "Aasimar") hero.stats.CHA += 2;
 
         hero.maxHP = 10 + Math.floor((hero.stats.CON-10)/2);
-        // Toughness logic
         if(b === "Outlander" || r === "Dwarf" || b === "Farmer") hero.maxHP += 2;
         hero.currentHP = hero.maxHP;
         hero.feats.push({name: "Favored Enemy", text: "Expertise in tracking foes."});
