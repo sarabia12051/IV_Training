@@ -28,28 +28,32 @@
         .stat-box b { color: var(--gold); font-size: 1.2em; display: block; }
         
         button { background: var(--primary); border: none; padding: 16px; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1.1rem; }
+        .btn-rest { background: #1a5e20; margin-top: 15px; border: 1px solid var(--gold); }
+        .btn-spellbook { background: #4e342e; padding: 8px; font-size: 0.8em; margin-top: 5px; border: 1px solid var(--gold); width: auto; display: inline-block; }
         .hidden { display: none; }
 
-        select, input { 
-            width: 100%; 
-            padding: 12px 15px; 
-            margin: 8px 0; 
-            background: #050a06; 
-            color: white; 
-            border: 1px solid var(--primary); 
-            border-radius: 8px; 
-            font-size: 1rem; 
-            box-sizing: border-box; 
-            appearance: none; 
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232e7d32%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 12px auto;
+        select, input, textarea { 
+            width: 100%; padding: 12px 15px; margin: 8px 0; 
+            background: #050a06; color: white; border: 1px solid var(--primary); 
+            border-radius: 8px; font-size: 1rem; box-sizing: border-box; appearance: none;
         }
-        
-        input { background-image: none; }
 
-        #modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); padding: 25px; border: 3px solid var(--gold); border-radius: 15px; z-index: 100; width: 85%; max-width: 350px; }
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232e7d32%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto;
+        }
+
+        textarea { font-family: inherit; height: 80px; resize: none; border-color: #2e7d32; }
+
+        .spell-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .spell-level { background: #0c140e; padding: 8px; border-radius: 6px; border: 1px solid #333; }
+        .slot-dot { 
+            display: inline-block; width: 14px; height: 14px; border-radius: 50%; 
+            border: 1px solid var(--gold); margin: 3px; cursor: pointer; 
+        }
+        .slot-used { background: var(--gold); box-shadow: 0 0 5px var(--gold); }
+
+        #modal, #spell-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); padding: 25px; border: 3px solid var(--gold); border-radius: 15px; z-index: 100; width: 85%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99; }
         .feature-item { margin-bottom: 10px; padding: 12px; border-left: 4px solid var(--gold); background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.9em; }
         .feature-item b { color: var(--gold); display: block; margin-bottom: 4px; }
@@ -110,18 +114,51 @@
         <div class="stat-box" style="flex:1;">Prof: <strong id="disp-prof"></strong></div>
     </div>
 
+    <div id="spell-section" class="hidden" style="margin-bottom:20px; border-top: 1px solid #333; padding-top: 10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="color:var(--gold);">SPELL SLOTS</strong>
+            <button class="btn-spellbook" onclick="toggleSpellbook(true)">SPELLBOOK</button>
+        </div>
+        <div class="spell-grid" id="spell-slots-display"></div>
+    </div>
+
     <strong>Abilities & Features:</strong>
-    <div id="features-list" style="margin-top:10px; height: 280px; overflow-y: auto;"></div>
+    <div id="features-list" style="margin-top:10px; height: 150px; overflow-y: auto;"></div>
+
+    <button class="btn-rest" onclick="longRest()">LONG REST (Refill All)</button>
+
+    <div style="margin-top:20px;">
+        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">EQUIPMENT / INVENTORY</label>
+        <textarea id="note-equip" placeholder="Weapons, armor, gear..." oninput="updateNotes()"></textarea>
+        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">COIN PURSE (GP, SP, CP)</label>
+        <textarea id="note-coin" placeholder="Finances and loot..." oninput="updateNotes()"></textarea>
+        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">ADVENTURE LOG</label>
+        <textarea id="note-log" placeholder="NPCs, quests, locations..." oninput="updateNotes()"></textarea>
+    </div>
 
     <button onclick="triggerLevelUp()">LEVEL UP</button>
     <button style="background:#422; margin-top:20px; font-size: 0.8em;" onclick="reset()">DELETE CHARACTER</button>
 </div>
 
-<div id="modal-overlay" class="overlay hidden"></div>
+<div id="modal-overlay" class="overlay hidden" onclick="closeAllModals()"></div>
+
 <div id="modal" class="hidden">
     <h2 id="modal-title" style="color:var(--gold); margin-top:0;">Level Up</h2>
     <div id="modal-content"></div>
     <button onclick="confirmLevelUp()">APPLY CHANGES</button>
+</div>
+
+<div id="spell-modal" class="hidden">
+    <h2 style="color:var(--gold); margin-top:0;">Ranger Spellbook</h2>
+    <div id="spell-list-content">
+        <div class="feature-item"><b>Hunter's Mark (Lvl 1)</b> Bonus Action. +1d6 dmg to target. Advantage on tracking them.</div>
+        <div class="feature-item"><b>Cure Wounds (Lvl 1)</b> 1 Action. Touch to heal 1d8 + Wis mod HP.</div>
+        <div class="feature-item"><b>Longstrider (Lvl 1)</b> 1 Action. Speed increases by 10ft for 1 hour.</div>
+        <div class="feature-item"><b>Fog Cloud (Lvl 1)</b> 1 Action. Create 20ft radius of heavy obscurement.</div>
+        <div class="feature-item"><b>Pass Without Trace (Lvl 2)</b> +10 to Stealth checks for the whole party.</div>
+        <div class="feature-item"><b>Spike Growth (Lvl 2)</b> Create terrain that deals 2d4 dmg per 5ft moved.</div>
+    </div>
+    <button onclick="toggleSpellbook(false)">CLOSE</button>
 </div>
 
 <script>
@@ -133,6 +170,12 @@
         11: { title: "Multiattack", options: { "Volley": "AoE Ranged Attack.", "Whirlwind": "AoE Melee Attack." }},
         15: { title: "Superior Defense", options: { "Evasion": "Dodge AoE spells.", "Stand Against Tide": "Missed? Make them hit others.", "Uncanny Dodge": "Halve damage taken." }},
         "ASI": { title: "Stat Increase", options: { "DEX": "Dexterity +2", "WIS": "Wisdom +2", "CON": "Constitution +2" }}
+    };
+
+    const spellTable = {
+        1:[], 2:[2], 3:[3], 4:[3], 5:[4,2], 6:[4,2], 7:[4,3], 8:[4,3], 9:[4,3,2], 10:[4,3,2],
+        11:[4,3,3], 12:[4,3,3], 13:[4,3,3,1], 14:[4,3,3,1], 15:[4,3,3,2], 16:[4,3,3,2],
+        17:[4,3,3,3,1], 18:[4,3,3,3,1], 19:[4,3,3,3,2], 20:[4,3,3,3,2]
     };
 
     const bgFeats = { 
@@ -151,26 +194,16 @@
     function generateCharacter() {
         let r = document.getElementById('race-select').value;
         let b = document.getElementById('bg-select').value;
-        
-        // ROLL AND SORT STATS FOR RANGER PRIORITY
         let rolls = [rollStat(), rollStat(), rollStat(), rollStat(), rollStat(), rollStat()];
-        rolls.sort((a, b) => b - a); // Sort High to Low
-
+        rolls.sort((a, b) => b - a); 
         hero = {
             name: document.getElementById('char-name').value || "Strider",
             race: r, bg: b, level: 1, prof: 2,
-            stats: { 
-                DEX: rolls[0], // Highest to Dexterity
-                WIS: rolls[1], // 2nd to Wisdom
-                CON: rolls[2], // 3rd to Constitution
-                STR: rolls[3], 
-                INT: rolls[4], 
-                CHA: rolls[5] 
-            },
-            feats: [{name: "Origin Feat: " + bgFeats[b], text: "Specialized training from your background."}]
+            stats: { DEX: rolls[0], WIS: rolls[1], CON: rolls[2], STR: rolls[3], INT: rolls[4], CHA: rolls[5] },
+            feats: [{name: "Origin Feat: " + bgFeats[b], text: "Specialized training from your background."}],
+            notes: { equip: "", coin: "", log: "" },
+            usedSlots: [0,0,0,0,0]
         };
-        
-        // Apply Bonuses
         if(r === "Human") Object.keys(hero.stats).forEach(s => hero.stats[s]++);
         if(r.includes("Elf") || r === "Halfling") hero.stats.DEX += 2;
         if(r === "Wood Elf" || r === "Aasimar") hero.stats.WIS += 1;
@@ -180,12 +213,41 @@
         if(r === "Tiefling") { hero.stats.CHA += 2; hero.stats.INT += 1; }
         if(r === "Half-Orc") { hero.stats.STR += 2; hero.stats.CON += 1; }
         if(r === "Aasimar") hero.stats.CHA += 2;
-
         hero.maxHP = 10 + Math.floor((hero.stats.CON-10)/2);
         if(b === "Outlander" || r === "Dwarf" || b === "Farmer") hero.maxHP += 2;
         hero.currentHP = hero.maxHP;
         hero.feats.push({name: "Favored Enemy", text: "Expertise in tracking foes."});
         save();
+    }
+
+    function toggleSlot(lvl, idx) {
+        hero.usedSlots[lvl] = hero.usedSlots[lvl] ^ (1 << idx);
+        save();
+    }
+
+    function longRest() {
+        hero.currentHP = hero.maxHP;
+        hero.usedSlots = [0,0,0,0,0];
+        save();
+    }
+
+    function updateNotes() {
+        if(!hero) return;
+        hero.notes.equip = document.getElementById('note-equip').value;
+        hero.notes.coin = document.getElementById('note-coin').value;
+        hero.notes.log = document.getElementById('note-log').value;
+        localStorage.setItem('ultraRangerSave', JSON.stringify(hero));
+    }
+
+    function toggleSpellbook(show) {
+        document.getElementById('modal-overlay').classList.toggle('hidden', !show);
+        document.getElementById('spell-modal').classList.toggle('hidden', !show);
+    }
+
+    function closeAllModals() {
+        document.getElementById('modal-overlay').classList.add('hidden');
+        document.getElementById('modal').classList.add('hidden');
+        document.getElementById('spell-modal').classList.add('hidden');
     }
 
     function triggerLevelUp() {
@@ -199,9 +261,7 @@
             let html = `<p><b>${rangerBook[key].title}</b></p><select id="choice">`;
             for(let o in rangerBook[key].options) html += `<option value="${o}">${o}</option>`;
             content.innerHTML = html + `</select>`;
-        } else {
-            content.innerHTML = `<p>Gaining Ranger Level ${next}...</p><input type="hidden" id="choice" value="General">`;
-        }
+        } else { content.innerHTML = `<p>Gaining Ranger Level ${next}...</p><input type="hidden" id="choice" value="General">`; }
     }
 
     function confirmLevelUp() {
@@ -214,8 +274,7 @@
         if([5,9,13,17].includes(hero.level)) hero.prof++;
         hero.maxHP += (6 + Math.floor((hero.stats.CON-10)/2));
         hero.currentHP = hero.maxHP;
-        document.getElementById('modal-overlay').classList.add('hidden');
-        document.getElementById('modal').classList.add('hidden');
+        closeAllModals();
         save();
     }
 
@@ -230,6 +289,7 @@
         document.getElementById('disp-hp').innerText = `${hero.currentHP}/${hero.maxHP}`;
         document.getElementById('disp-prof').innerText = `+${hero.prof}`;
         document.getElementById('disp-ac').innerText = 12 + Math.floor((hero.stats.DEX-10)/2);
+        
         let sDiv = document.getElementById('stat-display');
         sDiv.innerHTML = "";
         for(let s in hero.stats) {
@@ -237,11 +297,31 @@
             sDiv.innerHTML += `<div class="stat-box"><small>${s}</small><b>${hero.stats[s]}</b><small>${m>=0?'+':''}${m}</small></div>`;
         }
         document.getElementById('features-list').innerHTML = hero.feats.map(f => `<div class="feature-item"><b>${f.name}</b>${f.text}</div>`).reverse().join("");
+        
+        let spellDiv = document.getElementById('spell-slots-display');
+        let slots = spellTable[hero.level];
+        if(slots.length > 0) {
+            document.getElementById('spell-section').classList.remove('hidden');
+            spellDiv.innerHTML = slots.map((count, i) => {
+                let dots = "";
+                for(let d=0; d<count; d++) {
+                    let used = (hero.usedSlots[i] & (1 << d)) ? "slot-used" : "";
+                    dots += `<span class="slot-dot ${used}" onclick="toggleSlot(${i},${d})"></span>`;
+                }
+                return `<div class="spell-level"><small>Lvl ${i+1}</small><br>${dots}</div>`;
+            }).join("");
+        } else { document.getElementById('spell-section').classList.add('hidden'); }
+
+        if(hero.notes) {
+            document.getElementById('note-equip').value = hero.notes.equip || "";
+            document.getElementById('note-coin').value = hero.notes.coin || "";
+            document.getElementById('note-log').value = hero.notes.log || "";
+        }
     }
 
     window.onload = function() {
         let s = localStorage.getItem('ultraRangerSave');
-        if(s) { hero = JSON.parse(s); render(); }
+        if(s) { hero = JSON.parse(s); if(!hero.usedSlots) hero.usedSlots = [0,0,0,0,0]; render(); }
     };
     function reset() { if(confirm("Retire this Ranger?")) { localStorage.removeItem('ultraRangerSave'); location.reload(); } }
 </script>
