@@ -3,327 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Hunter Ranger</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2e7d32">
-
+    <title>Ultimate Ranger Mega-App</title>
     <style>
-        :root { --primary: #2e7d32; --gold: #fbc02d; --bg: #0a0f0b; --card: #1b261e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e8f5e9; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        :root { --primary: #2c5e2e; --accent: #d4af37; --bg: #f4f1ea; --text: #2b2b2b; --locked: #8b0000; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
+        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
+        .locked-card { border-left-color: var(--locked); background: #fff5f5; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; width: 100%; margin: 5px 0; font-weight: bold; }
+        .btn-confirm { background: #28a745; }
+        .btn-cancel { background: #dc3545; }
         
-        .container { 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 15px; 
-            border: 2px solid var(--primary); 
-            width: 100%; 
-            max-width: 420px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
-            box-sizing: border-box; 
-        }
-
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-        .stat-box { background: #0c140e; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--primary); }
-        .stat-box b { color: var(--gold); font-size: 1.2em; display: block; }
+        /* Modal Overlay */
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-box { background: white; width: 85%; padding: 20px; border-radius: 15px; text-align: center; }
         
-        button { background: var(--primary); border: none; padding: 16px; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1.1rem; }
-        .btn-rest { background: #1a5e20; margin-top: 15px; border: 1px solid var(--gold); }
-        .btn-spellbook { background: #4e342e; padding: 8px; font-size: 0.8em; margin-top: 5px; border: 1px solid var(--gold); width: auto; display: inline-block; }
-        .hidden { display: none; }
-
-        select, input, textarea { 
-            width: 100%; padding: 12px 15px; margin: 8px 0; 
-            background: #050a06; color: white; border: 1px solid var(--primary); 
-            border-radius: 8px; font-size: 1rem; box-sizing: border-box; appearance: none;
-        }
-
-        select {
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232e7d32%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto;
-        }
-
-        textarea { font-family: inherit; height: 80px; resize: none; border-color: #2e7d32; }
-
-        .spell-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-        .spell-level { background: #0c140e; padding: 8px; border-radius: 6px; border: 1px solid #333; }
-        .slot-dot { 
-            display: inline-block; width: 14px; height: 14px; border-radius: 50%; 
-            border: 1px solid var(--gold); margin: 3px; cursor: pointer; 
-        }
-        .slot-used { background: var(--gold); box-shadow: 0 0 5px var(--gold); }
-
-        #modal, #spell-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); padding: 25px; border: 3px solid var(--gold); border-radius: 15px; z-index: 100; width: 85%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99; }
-        .feature-item { margin-bottom: 10px; padding: 12px; border-left: 4px solid var(--gold); background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.9em; }
-        .feature-item b { color: var(--gold); display: block; margin-bottom: 4px; }
-        
-        .header-title { color: var(--primary); text-align: center; margin-bottom: 20px; font-size: 2.2em; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; font-size: 0.9em; }
+        .feature-item { padding: 8px; border-bottom: 1px solid #eee; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
-<div id="setup-screen" class="container">
-    <div class="header-title">RANGER</div>
-    <input type="text" id="char-name" placeholder="Character Name...">
-    
-    <label style="font-size: 0.8em; color: var(--primary); font-weight: bold;">SELECT LINEAGE</label>
-    <select id="race-select">
-        <option value="Human">Human (+1 All Stats)</option>
-        <option value="Elf">Elf (+2 Dex, Darkvision)</option>
-        <option value="Wood Elf">Wood Elf (+2 Dex, +1 Wis)</option>
-        <option value="Dwarf">Dwarf (+2 Con, Tough)</option>
-        <option value="Halfling">Halfling (+2 Dex, Lucky)</option>
-        <option value="Gnome">Gnome (+2 Int, Cunning)</option>
-        <option value="Dragonborn">Dragonborn (+2 Str, +1 Cha)</option>
-        <option value="Tiefling">Tiefling (+2 Cha, +1 Int)</option>
-        <option value="Half-Orc">Half-Orc (+2 Str, +1 Con)</option>
-        <option value="Aasimar">Aasimar (+2 Cha, +1 Wis)</option>
-    </select>
-
-    <label style="font-size: 0.8em; color: var(--primary); font-weight: bold;">SELECT BACKGROUND</label>
-    <select id="bg-select">
-        <option value="Farmer">Farmer (Feat: Tough)</option>
-        <option value="Guard">Guard (Feat: Alert)</option>
-        <option value="Guide">Guide (Feat: Magic Initiate)</option>
-        <option value="Hermit">Hermit (Feat: Healer)</option>
-        <option value="Merchant">Merchant (Feat: Lucky)</option>
-        <option value="Wayfarer">Wayfarer (Feat: Alert)</option>
-        <option value="Soldier">Soldier (Feat: Savage Attacker)</option>
-        <option value="Acolyte">Acolyte (Feat: Magic Initiate)</option>
-        <option value="Criminal">Criminal (Feat: Alert)</option>
-        <option value="Outlander">Outlander (Feat: Tough)</option>
-        <option value="Sage">Sage (Feat: Magic Initiate)</option>
-        <option value="Noble">Noble (Feat: Skilled)</option>
-    </select>
-
-    <button onclick="generateCharacter()">GENERATE RANGER</button>
-</div>
-
-<div id="main-sheet" class="container hidden">
-    <h1 id="disp-name" style="margin:0; font-size: 1.5em; text-align:center;"></h1>
-    <p style="text-align:center; color:#888; margin-top:5px;">
-        Level <span id="disp-lvl"></span> <span id="disp-race"></span> Hunter (<span id="disp-bg"></span>)
-    </p>
-
-    <div class="stat-grid" id="stat-display"></div>
-
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-        <div class="stat-box" style="flex:2; border-color:var(--gold);">HP: <strong id="disp-hp"></strong></div>
-        <div class="stat-box" style="flex:1;">AC: <strong id="disp-ac"></strong></div>
-        <div class="stat-box" style="flex:1;">Prof: <strong id="disp-prof"></strong></div>
-    </div>
-
-    <div id="spell-section" class="hidden" style="margin-bottom:20px; border-top: 1px solid #333; padding-top: 10px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong style="color:var(--gold);">SPELL SLOTS</strong>
-            <button class="btn-spellbook" onclick="toggleSpellbook(true)">SPELLBOOK</button>
+    <div class="card">
+        <h2 id="char-name">Marco Ocala</h2>
+        <div class="stat-grid">
+            <div><strong>Level</strong><br><span id="val-lv">1</span></div>
+            <div><strong>HP</strong><br><span id="val-hp">10</span></div>
+            <div><strong>Prof.</strong><br>+<span id="val-prof">2</span></div>
         </div>
-        <div class="spell-grid" id="spell-slots-display"></div>
     </div>
 
-    <strong>Abilities & Features:</strong>
-    <div id="features-list" style="margin-top:10px; height: 150px; overflow-y: auto;"></div>
+    <div class="card">
+        <h3>Class Features (Set in Stone)</h3>
+        <div id="feature-list">
+            <div class="feature-item">Lv 1: Favored Enemy</div>
+            <div class="feature-item">Lv 1: Natural Explorer</div>
+        </div>
+    </div>
+    <div class="card" id="spellbook-zone">
+    <h3>Ranger Spellbook</h3>
+    <div id="spell-list">
+        <p style="font-size: 0.8em; color: #666;">Unlock level 2 to choose spells.</p>
+    </div>
+</div>
 
-    <button class="btn-rest" onclick="longRest()">LONG REST (Refill All)</button>
+<div class="card" id="choice-zone" style="display:none;">
+    <h3 id="choice-title">Special Decision</h3>
+    <div id="choice-buttons"></div>
+</div>
 
-    <div style="margin-top:20px;">
-        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">EQUIPMENT / INVENTORY</label>
-        <textarea id="note-equip" placeholder="Weapons, armor, gear..." oninput="updateNotes()"></textarea>
-        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">COIN PURSE (GP, SP, CP)</label>
-        <textarea id="note-coin" placeholder="Finances and loot..." oninput="updateNotes()"></textarea>
-        <label style="color:var(--gold); font-size:0.8em; font-weight:bold;">ADVENTURE LOG</label>
-        <textarea id="note-log" placeholder="NPCs, quests, locations..." oninput="updateNotes()"></textarea>
+    <button class="btn" id="lvl-btn" onclick="askLevelUp()">LEVEL UP TO <span id="next-lv-num">2</span></button>
+
+    <div id="modal-overlay">
+        <div class="modal-box">
+            <h2 id="modal-title">Confirm Choice</h2>
+            <p id="modal-text">This action is permanent.</p>
+            <div id="choice-options"></div>
+            <button class="btn btn-confirm" id="final-confirm-btn">SET IN STONE</button>
+            <button class="btn btn-cancel" onclick="closeModal()">CANCEL</button>
+        </div>
     </div>
 
-    <button onclick="triggerLevelUp()">LEVEL UP</button>
-    <button style="background:#422; margin-top:20px; font-size: 0.8em;" onclick="reset()">DELETE CHARACTER</button>
-</div>
+    <script>
+        // THE RANGER MEGA-DATA LIBRARY
+const RANGER_DATA = {
+    subclasses: {
+        "Hunter": { features: { 3: "Hunter's Prey", 7: "Defensive Tactics", 11: "Multiattack", 15: "Superior Hunter's Defense" } },
+        "Beast Master": { features: { 3: "Ranger's Companion", 7: "Exceptional Training", 11: "Bestial Fury", 15: "Share Spells" } },
+        "Gloom Stalker": { features: { 3: "Dread Ambusher/Umbral Sight", 7: "Iron Mind", 11: "Stalker's Flurry", 15: "Shadowy Dodge" } },
+        "Horizon Walker": { features: { 3: "Planar Warrior", 7: "Ethereal Step", 11: "Distant Strike", 15: "Spectral Defense" } },
+        "Monster Slayer": { features: { 3: "Slayer's Hunter/Sense", 7: "Supernatural Defense", 11: "Magic-User's Nemesis", 15: "Slayer's Counter" } },
+        "Fey Wanderer": { features: { 3: "Dreadful Strike/Otherworldly Glamour", 7: "Beguiling Twist", 11: "Fey Reinforcements", 15: "Misty Wanderer" } },
+        "Swarmkeeper": { features: { 3: "Gathered Swarm", 7: "Wrath of Nature", 11: "Mighty Swarm", 15: "Swarming Dispersal" } },
+        "Drakewarden": { features: { 3: "Draconic Gift/Drake Companion", 7: "Bond of Fang and Scale", 11: "Drake's Breath", 15: "Perfected Bond" } }
+    },
+    spells: {
+        1: ["Alarm", "Animal Friendship", "Cure Wounds", "Detect Magic", "Ensnaring Strike", "Fog Cloud", "Goodberry", "Hail of Thorns", "Hunter's Mark", "Longstrider", "Speak with Animals"],
+        2: ["Barkskin", "Beast Sense", "Darkvision", "Lesser Restoration", "Locate Object", "Pass Without Trace", "Silence", "Spike Growth"],
+        3: ["Conjure Animals", "Conjure Barrage", "Daylight", "Lightning Arrow", "Nondetection", "Plant Growth", "Water Walk"],
+        4: ["Freedom of Movement", "Grasping Vine", "Locate Creature", "Stoneskin"],
+        5: ["Commune with Nature", "Conjure Volley", "Swift Quiver", "Tree Stride"]
+    }
+};
 
-<div id="modal-overlay" class="overlay hidden" onclick="closeAllModals()"></div>
+let marco = {
+    level: 1,
+    hp: 12,
+    subclass: null,
+    lockedFeatures: ["Favored Enemy", "Natural Explorer"],
+    spellsKnown: ["Hunter's Mark"],
+    choices: {} // For tactics like Colossus Slayer
+};
 
-<div id="modal" class="hidden">
-    <h2 id="modal-title" style="color:var(--gold); margin-top:0;">Level Up</h2>
-    <div id="modal-content"></div>
-    <button onclick="confirmLevelUp()">APPLY CHANGES</button>
-</div>
-
-<div id="spell-modal" class="hidden">
-    <h2 style="color:var(--gold); margin-top:0;">Ranger Spellbook</h2>
-    <div id="spell-list-content">
-        <div class="feature-item"><b>Hunter's Mark (Lvl 1)</b> Bonus Action. +1d6 dmg to target. Advantage on tracking them.</div>
-        <div class="feature-item"><b>Cure Wounds (Lvl 1)</b> 1 Action. Touch to heal 1d8 + Wis mod HP.</div>
-        <div class="feature-item"><b>Longstrider (Lvl 1)</b> 1 Action. Speed increases by 10ft for 1 hour.</div>
-        <div class="feature-item"><b>Fog Cloud (Lvl 1)</b> 1 Action. Create 20ft radius of heavy obscurement.</div>
-        <div class="feature-item"><b>Pass Without Trace (Lvl 2)</b> +10 to Stealth checks for the whole party.</div>
-        <div class="feature-item"><b>Spike Growth (Lvl 2)</b> Create terrain that deals 2d4 dmg per 5ft moved.</div>
-    </div>
-    <button onclick="toggleSpellbook(false)">CLOSE</button>
-</div>
-
-<script>
-    let hero = null;
-    const rangerBook = {
-        2: { title: "Fighting Style", options: { "Archery": "+2 to ranged attacks.", "Defense": "+1 to AC.", "Dueling": "+2 to melee dmg (1h)." }},
-        3: { title: "Hunter's Prey", options: { "Colossus Slayer": "Deal +1d8 if target is hurt.", "Giant Killer": "Counter-attack large foes.", "Horde Breaker": "Extra attack on nearby foe." }},
-        7: { title: "Defensive Tactics", options: { "Escape the Horde": "Opp-attacks have Disadvantage.", "Multiattack Defense": "Hit once? +4 AC after.", "Steel Will": "Adv vs Fear." }},
-        11: { title: "Multiattack", options: { "Volley": "AoE Ranged Attack.", "Whirlwind": "AoE Melee Attack." }},
-        15: { title: "Superior Defense", options: { "Evasion": "Dodge AoE spells.", "Stand Against Tide": "Missed? Make them hit others.", "Uncanny Dodge": "Halve damage taken." }},
-        "ASI": { title: "Stat Increase", options: { "DEX": "Dexterity +2", "WIS": "Wisdom +2", "CON": "Constitution +2" }}
+// SAFETY LOCK ENGINE
+function requestChange(type, detail, callback) {
+    const modal = document.getElementById('modal-overlay');
+    document.getElementById('modal-title').innerText = "SET IN STONE?";
+    document.getElementById('modal-text').innerText = `You are choosing: ${detail}. This decision cannot be undone.`;
+    modal.style.display = 'flex';
+    
+    document.getElementById('final-confirm-btn').onclick = () => {
+        callback();
+        modal.style.display = 'none';
+        saveAndRefresh();
     };
+}
 
-    const spellTable = {
-        1:[], 2:[2], 3:[3], 4:[3], 5:[4,2], 6:[4,2], 7:[4,3], 8:[4,3], 9:[4,3,2], 10:[4,3,2],
-        11:[4,3,3], 12:[4,3,3], 13:[4,3,3,1], 14:[4,3,3,1], 15:[4,3,3,2], 16:[4,3,3,2],
-        17:[4,3,3,3,1], 18:[4,3,3,3,1], 19:[4,3,3,3,2], 20:[4,3,3,3,2]
-    };
+function askLevelUp() {
+    let next = marco.level + 1;
+    requestChange("Level Up", `Level ${next}`, () => {
+        marco.level = next;
+        marco.hp += 8; // Avg 6 + 2 Con
+        if(next === 3) promptSubclass();
+    });
+}
 
-    const bgFeats = { 
-        "Farmer": "Tough", "Guard": "Alert", "Guide": "Magic Initiate", "Hermit": "Healer", "Merchant": "Lucky",
-        "Wayfarer": "Alert", "Soldier": "Savage Attacker", "Acolyte": "Magic Initiate", "Criminal": "Alert", 
-        "Outlander": "Tough", "Sage": "Magic Initiate", "Noble": "Skilled" 
-    };
-
-    function rollStat() {
-        let rolls = [rand(6), rand(6), rand(6), rand(6)];
-        rolls.sort().shift();
-        return rolls.reduce((a, b) => a + b, 0);
+function promptSubclass() {
+    let list = Object.keys(RANGER_DATA.subclasses).join(", ");
+    // In a full app, this would be a dropdown, but for logic:
+    let choice = prompt("Choose your Subclass: " + list);
+    if(RANGER_DATA.subclasses[choice]) {
+        marco.subclass = choice;
     }
-    function rand(m) { return Math.floor(Math.random() * m) + 1; }
+}
 
-    function generateCharacter() {
-        let r = document.getElementById('race-select').value;
-        let b = document.getElementById('bg-select').value;
-        let rolls = [rollStat(), rollStat(), rollStat(), rollStat(), rollStat(), rollStat()];
-        rolls.sort((a, b) => b - a); 
-        hero = {
-            name: document.getElementById('char-name').value || "Strider",
-            race: r, bg: b, level: 1, prof: 2,
-            stats: { DEX: rolls[0], WIS: rolls[1], CON: rolls[2], STR: rolls[3], INT: rolls[4], CHA: rolls[5] },
-            feats: [{name: "Origin Feat: " + bgFeats[b], text: "Specialized training from your background."}],
-            notes: { equip: "", coin: "", log: "" },
-            usedSlots: [0,0,0,0,0]
-        };
-        if(r === "Human") Object.keys(hero.stats).forEach(s => hero.stats[s]++);
-        if(r.includes("Elf") || r === "Halfling") hero.stats.DEX += 2;
-        if(r === "Wood Elf" || r === "Aasimar") hero.stats.WIS += 1;
-        if(r === "Dwarf") hero.stats.CON += 2;
-        if(r === "Gnome") hero.stats.INT += 2;
-        if(r === "Dragonborn") { hero.stats.STR += 2; hero.stats.CHA += 1; }
-        if(r === "Tiefling") { hero.stats.CHA += 2; hero.stats.INT += 1; }
-        if(r === "Half-Orc") { hero.stats.STR += 2; hero.stats.CON += 1; }
-        if(r === "Aasimar") hero.stats.CHA += 2;
-        hero.maxHP = 10 + Math.floor((hero.stats.CON-10)/2);
-        if(b === "Outlander" || r === "Dwarf" || b === "Farmer") hero.maxHP += 2;
-        hero.currentHP = hero.maxHP;
-        hero.feats.push({name: "Favored Enemy", text: "Expertise in tracking foes."});
-        save();
+function saveAndRefresh() {
+    localStorage.setItem('marco_mega_sheet', JSON.stringify(marco));
+    updateUI();
+}
+
+function updateUI() {
+    document.getElementById('val-lv').innerText = marco.level;
+    document.getElementById('val-hp').innerText = marco.hp;
+    document.getElementById('val-prof').innerText = Math.ceil(1 + (marco.level / 4));
+    
+    // 1. Update Features (Set in Stone list)
+    let list = document.getElementById('feature-list');
+    list.innerHTML = marco.lockedFeatures.map(f => `<div class="feature-item">🔒 ${f}</div>`).join('');
+
+    // 2. Update Spellbook (Unlocks at Level 2)
+    let spellZone = document.getElementById('spell-list');
+    if (marco.level >= 2) {
+        let available = RANGER_DATA.spells[1] || []; 
+        spellZone.innerHTML = available.map(s => 
+            `<button class="btn" style="background:#4a7c4c; font-size:0.8em; margin:2px;" onclick="learnSpell('${s}')">${s}</button>`
+        ).join('');
     }
 
-    function toggleSlot(lvl, idx) {
-        hero.usedSlots[lvl] = hero.usedSlots[lvl] ^ (1 << idx);
-        save();
+    // 3. Hunter Tactics (Appears at Level 3 if you are a Hunter)
+    const choiceZone = document.getElementById('choice-zone');
+    if (marco.subclass === "Hunter" && marco.level >= 3 && !marco.choices['Hunter-Prey']) {
+        choiceZone.style.display = 'block';
+        document.getElementById('choice-title').innerText = "Select Hunter's Prey";
+        let tactics = ["Colossus Slayer", "Giant Killer", "Horde Breaker"];
+        document.getElementById('choice-buttons').innerHTML = tactics.map(t => 
+            `<button class="btn" onclick="requestChange('Tactic', '${t}', () => { marco.choices['Hunter-Prey'] = '${t}'; marco.lockedFeatures.push('Hunter: ${t}'); })">${t}</button>`
+        ).join('');
+    } else {
+        choiceZone.style.display = 'none';
     }
+}
 
-    function longRest() {
-        hero.currentHP = hero.maxHP;
-        hero.usedSlots = [0,0,0,0,0];
-        save();
-    }
-
-    function updateNotes() {
-        if(!hero) return;
-        hero.notes.equip = document.getElementById('note-equip').value;
-        hero.notes.coin = document.getElementById('note-coin').value;
-        hero.notes.log = document.getElementById('note-log').value;
-        localStorage.setItem('ultraRangerSave', JSON.stringify(hero));
-    }
-
-    function toggleSpellbook(show) {
-        document.getElementById('modal-overlay').classList.toggle('hidden', !show);
-        document.getElementById('spell-modal').classList.toggle('hidden', !show);
-    }
-
-    function closeAllModals() {
-        document.getElementById('modal-overlay').classList.add('hidden');
-        document.getElementById('modal').classList.add('hidden');
-        document.getElementById('spell-modal').classList.add('hidden');
-    }
-
-    function triggerLevelUp() {
-        if(hero.level >= 20) return;
-        let next = hero.level + 1;
-        document.getElementById('modal-overlay').classList.remove('hidden');
-        document.getElementById('modal').classList.remove('hidden');
-        let key = [4,8,12,16,19].includes(next) ? "ASI" : next;
-        let content = document.getElementById('modal-content');
-        if(rangerBook[key]) {
-            let html = `<p><b>${rangerBook[key].title}</b></p><select id="choice">`;
-            for(let o in rangerBook[key].options) html += `<option value="${o}">${o}</option>`;
-            content.innerHTML = html + `</select>`;
-        } else { content.innerHTML = `<p>Gaining Ranger Level ${next}...</p><input type="hidden" id="choice" value="General">`; }
-    }
-
-    function confirmLevelUp() {
-        let c = document.getElementById('choice').value;
-        hero.level++;
-        if(hero.stats[c]) hero.stats[c] += 2;
-        if(rangerBook[hero.level]) hero.feats.push({name: c, text: rangerBook[hero.level].options[c]});
-        if(hero.level === 5) hero.feats.push({name: "Extra Attack", text: "Attack twice per action."});
-        if(hero.level === 10) hero.feats.push({name: "Vanish", text: "Hide as a Bonus Action."});
-        if([5,9,13,17].includes(hero.level)) hero.prof++;
-        hero.maxHP += (6 + Math.floor((hero.stats.CON-10)/2));
-        hero.currentHP = hero.maxHP;
-        closeAllModals();
-        save();
-    }
-
-    function save() { localStorage.setItem('ultraRangerSave', JSON.stringify(hero)); render(); }
-    function render() {
-        document.getElementById('setup-screen').classList.add('hidden');
-        document.getElementById('main-sheet').classList.remove('hidden');
-        document.getElementById('disp-name').innerText = hero.name;
-        document.getElementById('disp-race').innerText = hero.race;
-        document.getElementById('disp-bg').innerText = hero.bg;
-        document.getElementById('disp-lvl').innerText = hero.level;
-        document.getElementById('disp-hp').innerText = `${hero.currentHP}/${hero.maxHP}`;
-        document.getElementById('disp-prof').innerText = `+${hero.prof}`;
-        document.getElementById('disp-ac').innerText = 12 + Math.floor((hero.stats.DEX-10)/2);
-        
-        let sDiv = document.getElementById('stat-display');
-        sDiv.innerHTML = "";
-        for(let s in hero.stats) {
-            let m = Math.floor((hero.stats[s]-10)/2);
-            sDiv.innerHTML += `<div class="stat-box"><small>${s}</small><b>${hero.stats[s]}</b><small>${m>=0?'+':''}${m}</small></div>`;
-        }
-        document.getElementById('features-list').innerHTML = hero.feats.map(f => `<div class="feature-item"><b>${f.name}</b>${f.text}</div>`).reverse().join("");
-        
-        let spellDiv = document.getElementById('spell-slots-display');
-        let slots = spellTable[hero.level];
-        if(slots.length > 0) {
-            document.getElementById('spell-section').classList.remove('hidden');
-            spellDiv.innerHTML = slots.map((count, i) => {
-                let dots = "";
-                for(let d=0; d<count; d++) {
-                    let used = (hero.usedSlots[i] & (1 << d)) ? "slot-used" : "";
-                    dots += `<span class="slot-dot ${used}" onclick="toggleSlot(${i},${d})"></span>`;
-                }
-                return `<div class="spell-level"><small>Lvl ${i+1}</small><br>${dots}</div>`;
-            }).join("");
-        } else { document.getElementById('spell-section').classList.add('hidden'); }
-
-        if(hero.notes) {
-            document.getElementById('note-equip').value = hero.notes.equip || "";
-            document.getElementById('note-coin').value = hero.notes.coin || "";
-            document.getElementById('note-log').value = hero.notes.log || "";
-        }
-    }
-
-    window.onload = function() {
-        let s = localStorage.getItem('ultraRangerSave');
-        if(s) { hero = JSON.parse(s); if(!hero.usedSlots) hero.usedSlots = [0,0,0,0,0]; render(); }
-    };
-    function reset() { if(confirm("Retire this Ranger?")) { localStorage.removeItem('ultraRangerSave'); location.reload(); } }
+// Helper to handle permanent spell learning
+function learnSpell(spellName) {
+    if (marco.spellsKnown.includes(spellName)) return;
+    requestChange("Learn Spell", spellName, () => {
+        marco.spellsKnown.push(spellName);
+        marco.lockedFeatures.push(`Spell: ${spellName}`);
+    });
+}
+        function load() {
+    let d = localStorage.getItem('marco_mega_sheet');
+    if (d) { marco = JSON.parse(d); updateUI(); }
+}
+window.onload = load;
 </script>
-</body>
 </html>
