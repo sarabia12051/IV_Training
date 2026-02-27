@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ultimate Ranger Mega-App</title>
+    <title>Ultimate Ranger App</title>
     <style>
         :root { --primary: #2c5e2e; --accent: #d4af37; --bg: #0d1117; --text: #c9d1d9; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; overscroll-behavior-y: contain; }
-        .card { background: #161b22; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 5px solid var(--primary); border: 1px solid #30363d; }
+        .card { background: #161b22; border-radius: 10px; padding: 15px; margin-bottom: 10px; border: 1px solid #30363d; border-left: 5px solid var(--primary); }
         .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; width: 100%; margin: 5px 0; font-weight: bold; cursor: pointer; }
         .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; margin-top: 15px; }
         .stat-box { border: 1px solid #444; padding: 5px; border-radius: 5px; background: #0d1117; }
-        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-box { background: #161b22; width: 85%; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid var(--primary); }
+        .spell-btn { background: #3d5a3e; font-size: 0.75em; padding: 6px; width: auto; margin: 2px; }
     </style>
 </head>
 <body>
 
-<div id="setup-menu" class="card" style="border: 2px solid #2e7d32;">
+<div id="setup-menu" class="card">
     <h2 style="text-align:center;">Ranger Creator</h2>
-    <input type="text" id="name-input" placeholder="Enter Hero Name" style="width:90%; padding:10px; margin-bottom:10px; border-radius:5px;">
+    <input type="text" id="name-input" placeholder="Character Name" style="width:90%; padding:10px; margin-bottom:10px;">
     <select id="race-input" style="width:100%; padding:10px; margin-bottom:10px;">
-        <option value="Human">Human (+1 All Stats)</option>
+        <option value="Human">Human (+1 All)</option>
         <option value="Elf">Elf (+2 DEX, +1 WIS)</option>
         <option value="Dwarf">Dwarf (+2 CON, +1 STR)</option>
         <option value="Halfling">Halfling (+2 DEX, +1 CHA)</option>
@@ -32,43 +31,51 @@
         <option value="Half-Orc">Half-Orc (+2 STR, +1 CON)</option>
     </select>
     <button class="btn" onclick="generateStats()">🎲 Roll Stats</button>
-    <div id="roll-display" style="text-align:center; margin:10px; color: #2e7d32; font-weight:bold;"></div>
-    <button class="btn" onclick="finalizeCharacter()" style="background:#2e7d32;">Finalize Character</button>
+    <div id="roll-display" style="text-align:center; margin:10px; color:var(--accent); font-weight:bold;"></div>
+    <button class="btn" onclick="finalizeCharacter()" style="background:#2e7d32;">Finalize Hero</button>
 </div>
 
 <div id="main-sheet" style="display:none;">
-    <h2 id="display-name" style="text-align: center; margin-bottom: 2px;"></h2>
-    <p id="display-race-class" style="text-align: center; color: #aaa;"></p>
+    <h2 id="display-name" style="text-align: center; margin-bottom:0;"></h2>
+    <p id="display-race-class" style="text-align: center; color: #aaa; margin-top:5px;"></p>
     
     <div class="stat-grid">
-        <div class="stat-box"><strong>DEX</strong><br><span id="val-dex">10</span></div>
-        <div class="stat-box"><strong>WIS</strong><br><span id="val-wis">10</span></div>
-        <div class="stat-box"><strong>CON</strong><br><span id="val-con">10</span></div>
-        <div class="stat-box"><strong>STR</strong><br><span id="val-str">10</span></div>
-        <div class="stat-box"><strong>INT</strong><br><span id="val-int">10</span></div>
-        <div class="stat-box"><strong>CHA</strong><br><span id="val-cha">10</span></div>
+        <div class="stat-box"><strong>DEX</strong><br><span id="val-dex"></span></div>
+        <div class="stat-box"><strong>WIS</strong><br><span id="val-wis"></span></div>
+        <div class="stat-box"><strong>CON</strong><br><span id="val-con"></span></div>
+        <div class="stat-box"><strong>STR</strong><br><span id="val-str"></span></div>
+        <div class="stat-box"><strong>INT</strong><br><span id="val-int"></span></div>
+        <div class="stat-box"><strong>CHA</strong><br><span id="val-cha"></span></div>
     </div>
 
-    <div style="display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
-        <div><strong>HP:</strong> <span id="val-hp" style="color:#ffd700;">12</span></div>
-        <div><strong>Prof:</strong> +<span id="val-prof">2</span></div>
+    <div style="display: flex; justify-content: space-around; margin: 15px 0; border-top:1px solid #333; padding-top:10px;">
+        <div><strong>HP:</strong> <span id="val-hp" style="color:var(--accent);"></span></div>
+        <div><strong>Prof:</strong> +<span id="val-prof"></span></div>
     </div>
 
-    <div class="card" style="margin-top:20px;">
+    <div class="card">
         <h3>Features & Spells</h3>
         <div id="feature-list"></div>
+        <div id="spell-zone" style="margin-top:10px; border-top:1px solid #444; padding-top:10px;"></div>
     </div>
 
-    <button class="btn" onclick="askLevelUp()">LEVEL UP TO <span id="next-lv-num">2</span></button>
+    <button class="btn" id="lv-btn" onclick="levelUp()">LEVEL UP</button>
+    <button class="btn" onclick="factoryReset()" style="background:#8b0000; margin-top:40px; opacity:0.4;">⚠️ NEW CHARACTER</button>
 </div>
 
-<div id="modal-overlay"><div class="modal-box"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" id="final-confirm-btn">CONFIRM</button><button class="btn" onclick="closeModal()" style="background:#444;">CANCEL</button></div></div>
-
-<button class="btn" onclick="factoryReset()" style="background:#8b0000; margin-top:50px; opacity:0.6;">⚠️ FACTORY RESET</button>
-
 <script>
+const DATA = {
+    races: {
+        "Human":{dex:1,wis:1,con:1,str:1,int:1,cha:1}, "Elf":{dex:2,wis:1}, "Dwarf":{con:2,str:1},
+        "Halfling":{dex:2,cha:1}, "Tiefling":{cha:2,int:1}, "Dragonborn":{str:2,cha:1},
+        "Gnome":{int:2,con:1}, "Half-Elf":{cha:2,dex:1,wis:1}, "Half-Orc":{str:2,con:1}
+    },
+    archetypes: ["Hunter", "Gloom Stalker", "Beast Master"],
+    spells: ["Cure Wounds", "Hunter's Mark", "Fog Cloud", "Goodberry", "Animal Friendship", "Longstrider"]
+};
+
 let tempRolls = [];
-let marco = { level: 1, hp: 12, name: "", race: "", stats: {dex:10, wis:10, con:10, str:10, int:10, cha:10}, lockedFeatures: ["Favored Enemy", "Natural Explorer"] };
+let marco = { level: 1, hp: 10, name: "", race: "", subclass: "", stats: {}, features: ["Favored Enemy", "Natural Explorer"], spells: [] };
 
 function generateStats() {
     tempRolls = Array.from({length: 6}, () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 8).sort((a, b) => b - a);
@@ -76,62 +83,56 @@ function generateStats() {
 }
 
 function finalizeCharacter() {
-    let name = document.getElementById('name-input').value;
-    let race = document.getElementById('race-input').value;
-    if (!name || tempRolls.length === 0) return alert("Roll stats first!");
-
-    marco.name = name; marco.race = race;
+    let n = document.getElementById('name-input').value;
+    let r = document.getElementById('race-input').value;
+    if (!n || tempRolls.length === 0) return alert("Enter name and roll stats!");
+    marco.name = n; marco.race = r;
     marco.stats = { dex: tempRolls[0], wis: tempRolls[1], con: tempRolls[2], str: tempRolls[3], int: tempRolls[4], cha: tempRolls[5] };
-
-    if (race === "Human") Object.keys(marco.stats).forEach(s => marco.stats[s] += 1);
-    if (race === "Elf") { marco.stats.dex += 2; marco.stats.wis += 1; }
-    if (race === "Dwarf") { marco.stats.con += 2; marco.stats.str += 1; }
-    if (race === "Halfling") { marco.stats.dex += 2; marco.stats.cha += 1; }
-    if (race === "Tiefling") { marco.stats.cha += 2; marco.stats.int += 1; }
-    if (race === "Dragonborn") { marco.stats.str += 2; marco.stats.cha += 1; }
-    if (race === "Gnome") { marco.stats.int += 2; marco.stats.con += 1; }
-    if (race === "Half-Elf") { marco.stats.cha += 2; marco.stats.dex += 1; marco.stats.wis += 1; }
-    if (race === "Half-Orc") { marco.stats.str += 2; marco.stats.con += 1; }
-
+    let b = DATA.races[r]; for (let s in b) { marco.stats[s] += b[s]; }
     marco.hp = 10 + Math.floor((marco.stats.con - 10) / 2);
-    saveAndRefresh();
+    save();
 }
 
-function askLevelUp() {
-    const modal = document.getElementById('modal-overlay');
-    document.getElementById('modal-title').innerText = "Level Up?";
-    document.getElementById('modal-text').innerText = `Advance to Level ${marco.level + 1}?`;
-    modal.style.display = 'flex';
-    document.getElementById('final-confirm-btn').onclick = () => {
-        marco.level++; marco.hp += (6 + Math.floor((marco.stats.con - 10) / 2));
-        modal.style.display = 'none'; saveAndRefresh();
-    };
+function levelUp() {
+    marco.level++;
+    marco.hp += (6 + Math.floor((marco.stats.con - 10) / 2));
+    if (marco.level === 3) {
+        let choice = prompt("Choose Archetype: Hunter, Gloom Stalker, or Beast Master");
+        if (DATA.archetypes.includes(choice)) { marco.subclass = choice; marco.features.push("Archetype: " + choice); }
+    }
+    save();
 }
 
-function saveAndRefresh() {
-    localStorage.setItem('marco_mega_sheet', JSON.stringify(marco));
-    updateUI();
-}
+function learnSpell(s) { if (!marco.spells.includes(s)) { marco.spells.push(s); save(); } }
+
+function save() { localStorage.setItem('ranger_final_v1', JSON.stringify(marco)); updateUI(); }
 
 function updateUI() {
     if (!marco.name) return;
     document.getElementById('setup-menu').style.display = 'none';
     document.getElementById('main-sheet').style.display = 'block';
     document.getElementById('display-name').innerText = marco.name;
-    document.getElementById('display-race-class').innerText = `Level ${marco.level} ${marco.race} Ranger`;
-    document.getElementById('next-lv-num').innerText = marco.level + 1;
-    
+    document.getElementById('display-race-class').innerText = `Level ${marco.level} ${marco.race} Ranger ${marco.subclass ? '('+marco.subclass+')' : ''}`;
     for (let s in marco.stats) { document.getElementById('val-' + s).innerText = marco.stats[s]; }
     document.getElementById('val-hp').innerText = marco.hp;
     document.getElementById('val-prof').innerText = Math.ceil(1 + (marco.level / 4));
-    document.getElementById('feature-list').innerHTML = marco.lockedFeatures.map(f => `<div>🔒 ${f}</div>`).join('');
+    document.getElementById('lv-btn').innerText = `LEVEL UP TO ${marco.level + 1}`;
+    document.getElementById('feature-list').innerHTML = marco.features.map(f => `<div>✅ ${f}</div>`).join('');
+    
+    let sZone = document.getElementById('spell-zone');
+    let sHTML = marco.spells.map(s => `<div>🪄 ${s}</div>`).join('');
+    if (marco.level >= 2) {
+        let avail = DATA.spells.filter(s => !marco.spells.includes(s));
+        sHTML += `<div style="margin-top:10px; color:var(--accent);"><strong>Available Spells:</strong></div>`;
+        sHTML += avail.map(s => `<button class="btn spell-btn" onclick="learnSpell('${s}')">+ ${s}</button>`).join('');
+    }
+    sZone.innerHTML = sHTML;
 }
 
-function factoryReset() { if (confirm("Wipe character?")) { localStorage.removeItem('marco_mega_sheet'); location.reload(); } }
-function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+function factoryReset() { if(confirm("Delete this hero?")) { localStorage.clear(); location.reload(); } }
 
 window.onload = () => {
-    let d = localStorage.getItem('marco_mega_sheet');
+    let d = localStorage.getItem('ranger_final_v1');
     if (d) { marco = JSON.parse(d); updateUI(); }
 };
 </script>
