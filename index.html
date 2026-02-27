@@ -26,11 +26,14 @@
     <h2 style="text-align:center;">Ranger Creator</h2>
     <input type="text" id="name-input" placeholder="Enter Hero Name" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
     
-    <select id="race-input" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px;">
-        <option value="Human">Human (+1 All Stats)</option>
-        <option value="Elf">Elf (+2 DEX, +1 WIS)</option>
-    </select>
-
+<select id="race-input" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px;">
+    <option value="Human">Human (+1 All Stats)</option>
+    <option value="Elf">Elf (+2 DEX, +1 WIS)</option>
+    <option value="Dwarf">Dwarf (+2 CON, +1 STR)</option>
+    <option value="Halfling">Halfling (+2 DEX, +1 CHA)</option>
+    <option value="Tiefling">Tiefling (+2 CHA, +1 INT)</option>
+    <option value="Dragonborn">Dragonborn (+2 STR, +1 CHA)</option>
+</select>
     <button class="btn" onclick="generateStats()">🎲 Roll Stats</button>
     <div id="roll-display" style="text-align:center; margin:15px; font-weight:bold; font-size: 1.2em; color: #2e7d32;"></div>
     
@@ -38,10 +41,7 @@
 </div>
     
 
-        <button class="btn" onclick="finalizeCharacter()" style="background:#d4af37; color:black;">🔒 SET IN STONE</button>
-    </div>
-
-    <div id="main-app" class="card" style="background: #1a241a; border-left: 5px solid #d4af37;">
+     id="main-app" class="card" style="background: #1a241a; border-left: 5px solid #d4af37;">
         <h2 id="display-name" style="text-align: center; margin-bottom: 2px;">Character Name</h2>
         <p id="display-race-class" style="text-align: center; font-size: 0.8em; margin-top: 0; color: #aaa;">Level 1 Ranger</p>
         
@@ -107,6 +107,19 @@ function finalizeCharacter() {
     if (!nameInput || tempRolls.length === 0) return alert("Enter a name and roll your stats first!");
 
     marco.name = nameInput;
+const race = document.getElementById('race-input').value;
+
+    // Race Bonus Logic
+    if (race === "Human") { 
+        marco.str += 1; marco.dex += 1; marco.con += 1; 
+        marco.int += 1; marco.wis += 1; marco.cha += 1; 
+    }
+    if (race === "Elf") { marco.dex += 2; marco.wis += 1; }
+    if (race === "Dwarf") { marco.con += 2; marco.str += 1; }
+    if (race === "Halfling") { marco.dex += 2; marco.cha += 1; }
+    if (race === "Tiefling") { marco.cha += 2; marco.int += 1; }
+    if (race === "Dragonborn") { marco.str += 2; marco.cha += 1; }
+    
     marco.race = document.getElementById('race-select').value;
     
     // Auto-Optimize: Put high rolls in DEX and WIS
