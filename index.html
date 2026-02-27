@@ -33,6 +33,10 @@
     <option value="Halfling">Halfling (+2 DEX, +1 CHA)</option>
     <option value="Tiefling">Tiefling (+2 CHA, +1 INT)</option>
     <option value="Dragonborn">Dragonborn (+2 STR, +1 CHA)</option>
+    <option value="Gnome">Gnome (+2 INT, +1 CON)</option>
+<option value="Half-Elf">Half-Elf (+2 CHA, +1 DEX, +1 WIS)</option>
+<option value="Half-Orc">Half-Orc (+2 STR, +1 CON)</option>
+
 </select>
     <button class="btn" onclick="generateStats()">🎲 Roll Stats</button>
     <div id="roll-display" style="text-align:center; margin:15px; font-weight:bold; font-size: 1.2em; color: #2e7d32;"></div>
@@ -119,9 +123,9 @@ const race = document.getElementById('race-input').value;
     if (race === "Halfling") { marco.dex += 2; marco.cha += 1; }
     if (race === "Tiefling") { marco.cha += 2; marco.int += 1; }
     if (race === "Dragonborn") { marco.str += 2; marco.cha += 1; }
-    
-    marco.race = document.getElementById('race-select').value;
-    
+    if (race === "Gnome") { marco.int += 2; marco.con += 1; }
+    if (race === "Half-Elf") { marco.cha += 2; marco.dex += 1; marco.wis += 1; }
+    if (race === "Half-Orc") { marco.str += 2; marco.con += 1; }
     // Auto-Optimize: Put high rolls in DEX and WIS
     marco.stats = {
         dex: tempRolls[0], 
