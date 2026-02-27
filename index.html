@@ -22,21 +22,22 @@
     </style>
 </head>
 <body style="background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 15px;">
+<div id="setup-menu" class="card" style="display:block; border: 2px solid #2e7d32; margin-top: 20px;">
+    <h2 style="text-align:center;">Ranger Creator</h2>
+    <input type="text" id="name-input" placeholder="Enter Hero Name" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;">
+    
+    <select id="race-input" style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px;">
+        <option value="Human">Human (+1 All Stats)</option>
+        <option value="Elf">Elf (+2 DEX, +1 WIS)</option>
+    </select>
 
-    <div id="setup-menu" class="card" style="display:none; background:#1a241a; border: 2px solid #d4af37; padding: 20px; margin-bottom: 20px;">
-        <h2 style="color:#d4af37; text-align:center;">Ranger Creator</h2>
-        <input type="text" id="name-input" placeholder="Character Name" style="width:90%; padding:12px; margin-bottom:15px; background:#222; color:white; border:1px solid #444; border-radius:5px;">
-        
-        <label>Select Race:</label>
-        <select id="race-select" style="width:100%; padding:10px; margin-bottom:15px; background:#222; color:white;">
-            <option value="Human">Human (+1 All Stats)</option>
-            <option value="Elf">Elf (+2 DEX)</option>
-            <option value="Tiefling">Tiefling (+2 CHA, +1 INT)</option>
-            <option value="Dwarf">Dwarf (+2 CON)</option>
-        </select>
-
-        <button class="btn" onclick="generateStats()" style="background:#4a7c4c; margin-bottom:10px;">🎲 ROLL RANDOM STATS</button>
-        <div id="roll-display" style="text-align:center; font-weight:bold; margin-bottom:15px; color:#ffd700;"></div>
+    <button class="btn" onclick="generateStats()">🎲 Roll Stats</button>
+    <div id="roll-display" style="text-align:center; margin:15px; font-weight:bold; font-size: 1.2em; color: #2e7d32;"></div>
+    
+    <button class="btn" onclick="finalizeCharacter()" style="background:#2e7d32;">Finalize Character</button>
+</div>
+    
+id="roll-display" style="text-align:center; font-weight:bold; margin-bottom:15px; color:#ffd700;"></div>
 
         <button class="btn" onclick="finalizeCharacter()" style="background:#d4af37; color:black;">🔒 SET IN STONE</button>
     </div>
