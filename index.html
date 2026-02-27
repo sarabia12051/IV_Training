@@ -21,14 +21,43 @@
         .feature-item { padding: 8px; border-bottom: 1px solid #eee; font-size: 0.9em; }
     </style>
 </head>
-<body>
+<body style="background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 15px;">
 
-    <div class="card">
-        <h2 id="char-name">Marco Ocala</h2>
-        <div class="stat-grid">
-            <div><strong>Level</strong><br><span id="val-lv">1</span></div>
-            <div><strong>HP</strong><br><span id="val-hp">10</span></div>
-            <div><strong>Prof.</strong><br>+<span id="val-prof">2</span></div>
+    <div id="setup-menu" class="card" style="display:none; background:#1a241a; border: 2px solid #d4af37; padding: 20px; margin-bottom: 20px;">
+        <h2 style="color:#d4af37; text-align:center;">Ranger Creator</h2>
+        <input type="text" id="name-input" placeholder="Character Name" style="width:90%; padding:12px; margin-bottom:15px; background:#222; color:white; border:1px solid #444; border-radius:5px;">
+        
+        <label>Select Race:</label>
+        <select id="race-select" style="width:100%; padding:10px; margin-bottom:15px; background:#222; color:white;">
+            <option value="Human">Human (+1 All Stats)</option>
+            <option value="Elf">Elf (+2 DEX)</option>
+            <option value="Tiefling">Tiefling (+2 CHA, +1 INT)</option>
+            <option value="Dwarf">Dwarf (+2 CON)</option>
+        </select>
+
+        <button class="btn" onclick="generateStats()" style="background:#4a7c4c; margin-bottom:10px;">🎲 ROLL RANDOM STATS</button>
+        <div id="roll-display" style="text-align:center; font-weight:bold; margin-bottom:15px; color:#ffd700;"></div>
+
+        <button class="btn" onclick="finalizeCharacter()" style="background:#d4af37; color:black;">🔒 SET IN STONE</button>
+    </div>
+
+    <div id="main-app" class="card" style="background: #1a241a; border-left: 5px solid #d4af37;">
+        <h2 id="display-name" style="text-align: center; margin-bottom: 2px;">Character Name</h2>
+        <p id="display-race-class" style="text-align: center; font-size: 0.8em; margin-top: 0; color: #aaa;">Level 1 Ranger</p>
+        
+        <div class="stat-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top:15px; text-align:center;">
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>DEX</strong><br><span id="val-dex" style="font-size:1.2em; color:white;">10</span></div>
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>WIS</strong><br><span id="val-wis" style="font-size:1.2em; color:white;">10</span></div>
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>CON</strong><br><span id="val-con" style="font-size:1.2em; color:white;">10</span></div>
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>STR</strong><br><span id="val-str">10</span></div>
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>INT</strong><br><span id="val-int">10</span></div>
+            <div style="border:1px solid #444; padding:5px; border-radius:5px;"><strong>CHA</strong><br><span id="val-cha">10</span></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
+            <div><strong>HP:</strong> <span id="val-hp" style="color:#ffd700;">12</span></div>
+            <div><strong>AC:</strong> <span id="val-ac" style="color:#ffd700;">15</span></div>
+            <div><strong>Prof:</strong> +<span id="val-prof">2</span></div>
         </div>
     </div>
 
@@ -64,6 +93,52 @@
     </div>
 
     <script>
+        let tempRolls = [];
+
+function generateStats() {
+    // Generates 6 random numbers (D&D Style)
+    tempRolls = Array.from({length: 6}, () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 8);
+    tempRolls.sort((a, b) => b - a); // Highest rolls first
+    document.getElementById('roll-display').innerText = "Your Potential Stats: " + tempRolls.join(", ");
+}
+
+function finalizeCharacter() {
+    let nameInput = document.getElementById('name-input').value;
+    if (!nameInput || tempRolls.length === 0) return alert("Enter a name and roll your stats first!");
+
+    marco.name = nameInput;
+    marco.race = document.getElementById('race-select').value;
+    
+    // Auto-Optimize: Put high rolls in DEX and WIS
+    marco.stats = {
+        dex: tempRolls[0], 
+        wis: tempRolls[1],
+        con: tempRolls[2],
+        str: tempRolls[3],
+        int: tempRolls[4],
+        cha: tempRolls[5]
+    };
+    function factoryReset() {
+    if (confirm("⚠️ PERMANENT DELETE: This will wipe your character and start over. Are you sure?")) {
+        localStorage.removeItem('marco_mega_sheet');
+        location.reload();
+    }
+    }
+
+    // Apply Race Bonuses
+    if(marco.race === "Elf") marco.stats.dex += 2;
+    if(marco.race === "Human") Object.keys(marco.stats).forEach(s => marco.stats[s] += 1);
+    
+    document.getElementById('setup-menu').style.display = 'none';
+    saveAndRefresh();
+}
+
+function factoryReset() {
+    if (confirm("⚠️ PERMANENT DELETE: Are you sure you want to wipe this character and start over?")) {
+        localStorage.removeItem('marco_mega_sheet');
+        location.reload();
+    }
+}
         // THE RANGER MEGA-DATA LIBRARY
 const RANGER_DATA = {
     subclasses: {
@@ -175,6 +250,8 @@ function learnSpell(spellName) {
     let d = localStorage.getItem('marco_mega_sheet');
     if (d) { marco = JSON.parse(d); updateUI(); }
 }
+        <button class="btn" onclick="factoryReset()" style="background:#8b0000; margin: 40px auto; display: block; width: 80%; opacity: 0.7; font-size: 0.8em;">⚠️ FACTORY RESET CHARACTER</button>
 window.onload = load;
 </script>
 </html>
+ 
