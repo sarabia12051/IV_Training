@@ -1,15 +1,32 @@
 {
   "short_name": "IV Trainer",
-  "name": "FireRed IV Trainer",
+  "name": "Pokémon IV & EV Auditor",
+  "description": "A specialized training tool for FireRed and LeafGreen to track EV growth and audit IV stats.",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/34.png",
+      "src": "icon.png",
       "type": "image/png",
-      "sizes": "96x96"
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
-  "start_url": "index.html",
-  "background_color": "#121212",
+  "start_url": "./index.html",
+  "background_color": "#000000",
   "display": "standalone",
-  "theme_color": "#ff5252"
+  "scope": "./",
+  "theme_color": "#4A2B73",
+  "shortcuts": [
+    {
+      "name": "View Team",
+      "short_name": "Team",
+      "url": "./index.html#team",
+      "description": "Check your current team's stats"
+    }
+  ]
 }
