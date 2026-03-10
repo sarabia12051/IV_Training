@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireRed 151 EV Auditor</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #121212; color: #e0e0e0; padding: 15px; }
+        .card { background: #1e1e1e; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
+        h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #ff5252; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; font-size: 0.75rem; margin-top: 10px; color: #888; text-transform: uppercase; }
+        select, input { width: 100%; padding: 12px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 8px; margin-top: 5px; font-size: 1rem; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        button { background: #ff5252; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        .log-box { background: #000; padding: 12px; border-radius: 8px; font-family: 'Courier New', monospace; margin-top: 10px; border: 1px dashed #444; }
+        .stat-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #222; }
+        .ev-val { color: #00e676; font-weight: bold; }
+        .iv-val { color: #29b6f6; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>1. DNA Lock (IV Finder)</h2>
+    <label>Your Pokémon</label>
+    <select id="myPkmn">
+        <option value="92,90,77,85,75,85">Nidoking</option>
+        <option value="46,57,40,40,40,50">Nidoran♂</option>
+        </select>
+
+    <label>Nature</label>
+    <select id="natureSel"></select>
+
+    <div class="grid">
+        <div><label>Level</label><input type="number" id="lvl" value="5"></div>
+        <div><label>HP Stat</label><input type="number" id="sHP"></div>
+        <div><label>Atk Stat</label><input type="number" id="sAtk"></div>
+        <div><label>Def Stat</label><input type="number" id="sDef"></div>
+        <div><label>SpA Stat</label><input type="number" id="sSpA"></div>
+        <div><label>SpD Stat</label><input type="number" id="sSpD"></div>
+        <div><label>Spe Stat</label><input type="number" id="sSpe"></div>
+    </div>
+    <button onclick="calculateDNA()">LOCK DNA & REVERSE IVs</button>
+</div>
+
+<div class="card">
+    <h2>2. Battle Log (151 EV Yields)</h2>
+    <label>Defeated Pokémon</label>
+    <select id="foeList"></select>
+    
+    <label>Quantity</label>
+    <input type="number" id="qty" value="1">
+    <button onclick="logBattle()" style="background:#2196F3;">LOG TRAINING SESSION</button>
+</div>
+
+<div class="card">
+    <h2>3. Live Audit</h2>
+    <div id="auditDisplay" class="log-box">Awaiting DNA Lock...</div>
+</div>
+
+<script>
+// COMPLETE 151 EV YIELD DATA (Simplified for space)
+const evYields = {
+    "Bulbasaur": "spa:1", "Ivysaur": "spa:1,spd:1", "Venusaur": "spa:2,spd:1",
+    "Charmander": "spe:1", "Charmeleon": "spa:1,spe:1", "Charizard": "spa:3",
+    "Squirtle": "def:1", "Wartortle": "def:1,spd:1", "Blastoise": "spd:3",
+    "Caterpie": "hp:1", "Metapod": "def:2", "Butterfree": "spa:2,spd:1",
+    "Weedle": "spe:1", "Kakuna": "def:2", "Beedrill": "atk:2,spd:1",
+    "Pidgey": "spe:1", "Pidgeotto": "spe:2", "Pidgeot": "spe:3",
+    "Rattata": "spe:1", "Raticate": "spe:2", "Spearow": "spe:1", "Fearow": "spe:2",
+    "Ekans": "atk:1", "Arbok": "atk:2", "Pikachu": "spe:2", "Raichu": "spe:3",
+    "Sandshrew": "def:1", "Sandslash": "def:2", "Nidoran♀": "hp:1", "Nidorina": "hp:2", "Nidoqueen": "hp:3",
+    "Nidoran♂": "atk:1", "Nidorino": "atk:2", "Nidoking": "atk:3",
+    "Clefairy": "hp:2", "Clefable": "hp:3", "Vulpix": "spe:1", "Ninetales": "spd:1,spe:1",
+    "Jigglypuff": "hp:2", "Wigglytuff": "hp:3", "Zubat": "spe:1", "Golbat": "spe:2",
+    "Oddish": "spa:1", "Gloom": "spa:2", "Vileplume": "spa:3", "Paras": "atk:1", "Parasect": "atk:2,def:1",
+    "Venonat": "spd:1", "Venomoth": "spa:1,spe:1", "Diglett": "spe:1", "Dugtrio": "spe:2",
+    "Meowth": "spe:1", "Persian": "spe:2", "Psyduck": "spa:1", "Golduck": "spa:2",
+    "Mankey": "atk:1", "Primeape": "atk:2", "Growlithe": "atk:1", "Arcanine": "atk:2",
+    "Poliwag": "spe:1", "Poliwhirl": "spe:2", "Poliwrath": "def:3",
+    "Abra": "spa:1", "Kadabra": "spa:2", "Alakazam": "spa:3",
+    "Machop": "atk:1", "Machoke": "atk:2", "Machamp": "atk:3",
+    "Bellsprout": "atk:1", "Weepinbell": "atk:2", "Victreebel": "atk:3",
+    "Tentacool": "spd:1", "Tentacruel": "spd:2", "Geodude": "def:1", "Graveler": "def:2", "Golem": "def:3",
+    "Ponyta": "spe:1", "Rapidash": "spe:2", "Slowpoke": "hp:1", "Slowbro": "def:2",
+    "Magnemite": "spa:1", "Magneton": "spa:2", "Farfetch'd": "atk:1", "Doduo": "spe:1", "Dodrio": "spe:2",
+    "Seel": "spd:1", "Dewgong": "spd:2", "Grimer": "hp:1", "Muk": "hp:1,atk:1",
+    "Shellder": "def:1", "Cloyster": "def:2", "Gastly": "spa:1", "Haunter": "spa:2", "Gengar": "spa:3",
+    "Onix": "def:1", "Drowzee": "spd:1", "Hypno": "spd:2", "Krabby": "atk:1", "Kingler": "atk:2",
+    "Voltorb": "spe:1", "Electrode": "spe:2", "Exeggcute": "def:1", "Exeggutor": "spa:2",
+    "Cubone": "def:1", "Marowak": "def:2", "Hitmonlee": "atk:2", "Hitmonchan": "spd:2",
+    "Lickitung": "hp:2", "Koffing": "def:1", "Weezing": "def:2", "Rhyhorn": "def:1", "Rhydon": "atk:2",
+    "Chansey": "hp:2", "Tangela": "def:1", "Kangaskhan": "hp:2", "Horsea": "spa:1", "Seadra": "def:1,spa:1",
+    "Goldeen": "atk:1", "Seaking": "atk:2", "Staryu": "spe:1", "Starmie": "spe:2",
+    "Mr. Mime": "spd:2", "Scyther": "atk:1", "Jynx": "spa:2", "Electabuzz": "spe:2", "Magmar": "spa:2",
+    "Pinsir": "atk:2", "Tauros": "atk:1,spe:1", "Magikarp": "spe:0", "Gyarados": "atk:2",
+    "Lapras": "hp:2", "Ditto": "hp:1", "Eevee": "spd:1", "Vaporeon": "hp:2", "Jolteon": "spe:2", "Flareon": "atk:2",
+    "Porygon": "spa:1", "Omanyte": "def:1", "Omastar": "def:2", "Kabuto": "def:1", "Kabutops": "atk:2",
+    "Aerodactyl": "spe:2", "Snorlax": "hp:2", "Articuno": "spd:3", "Zapdos": "spa:3", "Moltres": "spa:3",
+    "Dratini": "atk:1", "Dragonair": "atk:2", "Dragonite": "atk:3", "Mewtwo": "spa:3", "Mew": "hp:3"
+};
+
+const natures = {
+    Adamant:{atk:1.1,spa:0.9}, Brave:{atk:1.1,spe:0.9}, Lonely:{atk:1.1,def:0.9}, Naughty:{atk:1.1,spd:0.9},
+    Bold:{def:1.1,atk:0.9}, Impish:{def:1.1,spa:0.9}, Lax:{def:1.1,spd:0.9}, Relaxed:{def:1.1,spe:0.9},
+    Modest:{spa:1.1,atk:0.9}, Mild:{spa:1.1,def:0.9}, Quiet:{spa:1.1,spe:0.9}, Rash:{spa:1.1,spd:0.9},
+    Calm:{spd:1.1,atk:0.9}, Careful:{spd:1.1,spa:0.9}, Gentle:{spd:1.1,def:0.9}, Sassy:{spd:1.1,spe:0.9},
+    Timid:{spe:1.1,atk:0.9}, Hasty:{spe:1.1,def:0.9}, Jolly:{spe:1.1,spa:0.9}, Naive:{spe:1.1,spd:0.9},
+    Hardy:{}, Docile:{}, Serious:{}, Bashful:{}, Quirky:{}
+};
+
+// Populate Lists
+const fSel = document.getElementById('foeList');
+Object.keys(evYields).forEach(p => fSel.add(new Option(`${p} (${evYields[p]})`, evYields[p])));
+
+const nSel = document.getElementById('natureSel');
+Object.keys(natures).forEach(n => nSel.add(new Option(n, n)));
+
+let player = { ivs: {}, evs: {hp:0, atk:0, def:0, spa:0, spd:0, spe:0} };
+
+function calculateDNA() {
+    const lvl = parseInt(document.getElementById('lvl').value);
+    const nat = natures[document.getElementById('natureSel').value];
+    const base = document.getElementById('myPkmn').value.split(',').map(Number);
+    const stats = [
+        parseInt(document.getElementById('sHP').value), parseInt(document.getElementById('sAtk').value),
+        parseInt(document.getElementById('sDef').value), parseInt(document.getElementById('sSpA').value),
+        parseInt(document.getElementById('sSpD').value), parseInt(document.getElementById('sSpe').value)
+    ];
+
+    player.ivs.hp = Math.round(((stats[0] - lvl - 10) * 100 / lvl) - 2 * base[0]);
+    const keys = ['atk', 'def', 'spa', 'spd', 'spe'];
+    keys.forEach((k, i) => {
+        let m = nat[k] || 1.0;
+        player.ivs[k] = Math.round((Math.ceil(stats[i+1] / m) - 5) * 100 / lvl) - 2 * base[i+1];
+    });
+    render();
+}
+
+function logBattle() {
+    const yieldStr = document.getElementById('foeList').value;
+    const count = parseInt(document.getElementById('qty').value);
+    yieldStr.split(',').forEach(part => {
+        const [stat, val] = part.split(':');
+        player.evs[stat] = Math.min(255, player.evs[stat] + (parseInt(val) * count));
+    });
+    render();
+}
+
+function render() {
+    let html = "<b>CURRENT AUDIT LOG:</b><br>";
+    const keys = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+    keys.forEach(k => {
+        html += `<div class="stat-line"><span>${k.toUpperCase()}</span> <span>EV: <span class="ev-val">${player.evs[k]}</span> | IV: <span class="iv-val">${player.ivs[k] ?? '??'}</span></span></div>`;
+    });
+    document.getElementById('auditDisplay').innerHTML = html;
+}
+</script>
+</body>
+</html>
