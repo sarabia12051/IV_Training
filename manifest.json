@@ -1,0 +1,15 @@
+{
+  "short_name": "IV Trainer",
+  "name": "FireRed IV Trainer",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/firered-leafgreen/34.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#121212",
+  "display": "standalone",
+  "theme_color": "#ff5252"
+}
