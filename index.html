@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IV Trainer</title>
+    
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#4A2B73">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
         body { font-family: -apple-system, sans-serif; background: #121212; color: #e0e0e0; padding: 15px; margin: 0; }
         .container { max-width: 500px; margin: auto; }
@@ -62,6 +69,13 @@
 </div>
 
 <script>
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+    });
+}
+
 // Data for Base Stats (Section 1) and EV Yields (Section 2)
 const pkmnData = {
     "Bulbasaur": {base:[45,49,49,65,65,45], yields:"spa:1"},
