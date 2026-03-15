@@ -3,292 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IV Trainer</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#4A2B73">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <title>IV Auditor Pro: 151 Edition</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #121212; color: #e0e0e0; padding: 15px; margin: 0; }
+        body { font-family: -apple-system, sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 15px; margin: 0; }
         .container { max-width: 500px; margin: auto; }
-        .card { background: #1e1e1e; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #ff5252; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; }
-        label { display: block; font-size: 0.75rem; margin-top: 10px; color: #888; text-transform: uppercase; font-weight: bold; }
-        select, input { width: 100%; padding: 12px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 8px; margin-top: 5px; font-size: 1rem; box-sizing: border-box; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { background: #ff5252; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 1rem; }
-        .log-box { background: #000; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; margin-top: 10px; border: 1px solid #333; line-height: 1.5; }
+        .card { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { margin: 0 0 10px 0; font-size: 1rem; color: #ff5252; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        label { display: block; font-size: 0.7rem; margin-top: 8px; color: #aaa; text-transform: uppercase; font-weight: bold; }
+        select, input { width: 100%; padding: 10px; background: #252525; border: 1px solid #444; color: white; border-radius: 6px; margin-top: 4px; font-size: 1rem; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        button { background: #ff5252; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 900; margin-top: 15px; cursor: pointer; font-size: 1rem; letter-spacing: 1px; }
+        .log-box { background: #000; padding: 12px; border-radius: 8px; font-family: 'Courier New', monospace; border: 1px solid #444; margin-top: 10px; }
         .stat-line { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #222; }
-        .ev-val { color: #00e676; font-weight: bold; }
-        .iv-val { color: #29b6f6; font-weight: bold; }
-        .header-title { text-align: center; color: #ff5252; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px; }
+        .iv-range { color: #29b6f6; font-weight: bold; }
+        .high-iv { color: #00e676; text-shadow: 0 0 5px rgba(0,230,118,0.3); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 class="header-title">IV TRAINER</h1>
+    <h1 style="text-align:center; color:#ff5252; font-size: 1.5rem; letter-spacing: 3px;">IV AUDITOR 151</h1>
 
     <div class="card">
-        <h2>1. DNA Lock (Target Pokémon)</h2>
-        <label>Select Your Pokémon</label>
+        <h2>1. Genetic Input</h2>
+        <label>Species</label>
         <select id="myPkmn"></select>
-
+        
         <label>Nature</label>
         <select id="natureSel"></select>
 
         <div class="grid">
             <div><label>Level</label><input type="number" id="lvl" value="5"></div>
-            <div><label>HP Stat</label><input type="number" id="sHP" placeholder="0"></div>
-            <div><label>Atk Stat</label><input type="number" id="sAtk" placeholder="0"></div>
-            <div><label>Def Stat</label><input type="number" id="sDef" placeholder="0"></div>
-            <div><label>SpA Stat</label><input type="number" id="sSpA" placeholder="0"></div>
-            <div><label>SpD Stat</label><input type="number" id="sSpD" placeholder="0"></div>
-            <div><label>Spe Stat</label><input type="number" id="sSpe" placeholder="0"></div>
+            <div><label>HP Stat</label><input type="number" id="sHP" placeholder="HP"></div>
+            <div><label>Atk Stat</label><input type="number" id="sAtk" placeholder="Atk"></div>
+            <div><label>Def Stat</label><input type="number" id="sDef" placeholder="Def"></div>
+            <div><label>SpA Stat</label><input type="number" id="sSpA" placeholder="SpA"></div>
+            <div><label>SpD Stat</label><input type="number" id="sSpD" placeholder="SpD"></div>
+            <div><label>Spe Stat</label><input type="number" id="sSpe" placeholder="Spe"></div>
         </div>
-        <button onclick="calculateDNA()">CALCULATE DNA (IVs)</button>
+        <button onclick="runAudit()">RUN SYSTEM AUDIT</button>
     </div>
 
     <div class="card">
-        <h2>2. Battle Log (EV Tracker)</h2>
-        <label>Defeated Pokémon</label>
-        <select id="foeList"></select>
-        <label>Quantity</label>
-        <input type="number" id="qty" value="1">
-        <button onclick="logBattle()" style="background:#2196F3;">LOG BATTLE</button>
-    </div>
-
-    <div class="card">
-        <h2>3. Audit Results</h2>
-        <div id="auditDisplay" class="log-box">Awaiting stats...</div>
+        <h2>2. Audit Results</h2>
+        <div id="auditDisplay" class="log-box">Awaiting DNA string...</div>
     </div>
 </div>
 
 <script>
-// PWA Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(console.error);
-    });
-}
-
-// Data for Base Stats (Section 1) and EV Yields (Section 2)
 const pkmnData = {
-    "Bulbasaur": {base:[45,49,49,65,65,45], yields:"spa:1"},
-    "Ivysaur": {base:[60,62,63,80,80,60], yields:"spa:1,spd:1"},
-    "Venusaur": {base:[80,82,83,100,100,80], yields:"spa:2,spd:1"},
-    "Charmander": {base:[39,52,43,60,50,65], yields:"spe:1"},
-    "Charmeleon": {base:[58,64,58,80,65,80], yields:"spa:1,spe:1"},
-    "Charizard": {base:[78,84,78,109,85,100], yields:"spa:3"},
-    "Squirtle": {base:[44,48,65,50,64,43], yields:"def:1"},
-    "Wartortle": {base:[59,63,80,65,80,58], yields:"def:1,spd:1"},
-    "Blastoise": {base:[79,83,100,85,105,78], yields:"spd:3"},
-    "Caterpie": {base:[45,30,35,20,20,45], yields:"hp:1"},
-    "Metapod": {base:[50,20,55,25,25,30], yields:"def:2"},
-    "Butterfree": {base:[60,45,50,80,80,70], yields:"spa:2,spd:1"},
-    "Weedle": {base:[40,35,30,20,20,50], yields:"spe:1"},
-    "Kakuna": {base:[45,25,50,25,25,35], yields:"def:2"},
-    "Beedrill": {base:[65,80,40,45,80,75], yields:"atk:2,spd:1"},
-    "Pidgey": {base:[40,45,40,35,35,56], yields:"spe:1"},
-    "Pidgeotto": {base:[63,60,55,50,50,71], yields:"spe:2"},
-    "Pidgeot": {base:[83,80,75,70,70,91], yields:"spe:3"},
-    "Rattata": {base:[30,56,35,25,35,72], yields:"spe:1"},
-    "Raticate": {base:[55,81,60,50,70,97], yields:"spe:2"},
-    "Spearow": {base:[40,60,30,31,31,70], yields:"spe:1"},
-    "Fearow": {base:[65,90,65,61,61,100], yields:"spe:2"},
-    "Ekans": {base:[35,60,44,40,54,55], yields:"atk:1"},
-    "Arbok": {base:[60,85,69,65,79,80], yields:"atk:2"},
-    "Pikachu": {base:[35,55,30,50,40,90], yields:"spe:2"},
-    "Raichu": {base:[60,90,55,90,80,100], yields:"spe:3"},
-    "Sandshrew": {base:[50,75,85,20,30,40], yields:"def:1"},
-    "Sandslash": {base:[75,100,110,45,55,65], yields:"def:2"},
-    "Nidoran♀": {base:[55,47,52,40,40,41], yields:"hp:1"},
-    "Nidorina": {base:[70,62,67,55,55,56], yields:"hp:2"},
-    "Nidoqueen": {base:[90,82,87,75,85,76], yields:"hp:3"},
-    "Nidoran♂": {base:[46,57,40,40,40,50], yields:"atk:1"},
-    "Nidorino": {base:[61,72,57,55,55,65], yields:"atk:2"},
-    "Nidoking": {base:[81,92,77,85,75,85], yields:"atk:3"},
-    "Clefairy": {base:[70,45,48,60,65,35], yields:"hp:2"},
-    "Clefable": {base:[95,70,73,85,90,60], yields:"hp:3"},
-    "Vulpix": {base:[38,41,40,50,65,65], yields:"spe:1"},
-    "Ninetales": {base:[73,76,75,81,100,100], yields:"spd:1,spe:1"},
-    "Jigglypuff": {base:[115,45,20,45,25,20], yields:"hp:2"},
-    "Wigglytuff": {base:[140,70,45,75,50,45], yields:"hp:3"},
-    "Zubat": {base:[40,45,35,30,40,55], yields:"spe:1"},
-    "Golbat": {base:[75,80,70,65,75,90], yields:"spe:2"},
-    "Oddish": {base:[45,50,55,75,65,30], yields:"spa:1"},
-    "Gloom": {base:[60,65,70,85,75,40], yields:"spa:2"},
-    "Vileplume": {base:[75,80,85,100,90,50], yields:"spa:3"},
-    "Paras": {base:[35,70,55,45,55,25], yields:"atk:1"},
-    "Parasect": {base:[60,95,80,60,80,30], yields:"atk:2,def:1"},
-    "Venonat": {base:[60,55,50,40,55,45], yields:"spd:1"},
-    "Venomoth": {base:[70,65,60,90,75,90], yields:"spa:1,spe:1"},
-    "Diglett": {base:[10,55,25,35,45,95], yields:"spe:1"},
-    "Dugtrio": {base:[35,80,50,50,70,120], yields:"spe:2"},
-    "Meowth": {base:[40,45,35,40,40,90], yields:"spe:1"},
-    "Persian": {base:[65,70,60,65,65,115], yields:"spe:2"},
-    "Psyduck": {base:[50,52,48,65,50,55], yields:"spa:1"},
-    "Golduck": {base:[80,82,78,95,80,85], yields:"spa:2"},
-    "Mankey": {base:[40,80,35,35,45,70], yields:"atk:1"},
-    "Primeape": {base:[65,105,60,60,70,95], yields:"atk:2"},
-    "Growlithe": {base:[55,70,45,70,50,60], yields:"atk:1"},
-    "Arcanine": {base:[90,110,80,100,80,95], yields:"atk:2"},
-    "Poliwag": {base:[40,50,40,40,40,90], yields:"spe:1"},
-    "Poliwhirl": {base:[65,65,65,50,50,90], yields:"spe:2"},
-    "Poliwrath": {base:[90,85,95,70,90,70], yields:"def:3"},
-    "Abra": {base:[25,20,15,105,55,90], yields:"spa:1"},
-    "Kadabra": {base:[40,35,30,120,70,105], yields:"spa:2"},
-    "Alakazam": {base:[55,50,45,135,85,120], yields:"spa:3"},
-    "Machop": {base:[70,80,50,35,35,35], yields:"atk:1"},
-    "Machoke": {base:[80,100,70,50,50,45], yields:"atk:2"},
-    "Machamp": {base:[90,130,80,65,85,55], yields:"atk:3"},
-    "Bellsprout": {base:[50,75,35,70,30,40], yields:"atk:1"},
-    "Weepinbell": {base:[65,90,50,85,45,55], yields:"atk:2"},
-    "Victreebel": {base:[80,105,65,100,60,70], yields:"atk:3"},
-    "Tentacool": {base:[40,40,35,50,100,70], yields:"spd:1"},
-    "Tentacruel": {base:[80,70,65,80,120,100], yields:"spd:2"},
-    "Geodude": {base:[40,80,100,30,30,20], yields:"def:1"},
-    "Graveler": {base:[55,95,115,45,45,35], yields:"def:2"},
-    "Golem": {base:[80,110,130,55,65,45], yields:"def:3"},
-    "Ponyta": {base:[50,85,55,65,65,90], yields:"spe:1"},
-    "Rapidash": {base:[65,100,70,80,80,105], yields:"spe:2"},
-    "Slowpoke": {base:[90,65,65,40,40,15], yields:"hp:1"},
-    "Slowbro": {base:[95,75,110,100,80,30], yields:"def:2"},
-    "Magnemite": {base:[25,35,70,95,55,45], yields:"spa:1"},
-    "Magneton": {base:[50,60,95,120,70,70], yields:"spa:2"},
-    "Farfetch'd": {base:[52,65,55,58,62,60], yields:"atk:1"},
-    "Doduo": {base:[35,85,45,35,35,75], yields:"spe:1"},
-    "Dodrio": {base:[60,110,70,60,60,100], yields:"spe:2"},
-    "Seel": {base:[65,45,55,45,70,45], yields:"spd:1"},
-    "Dewgong": {base:[90,70,80,70,95,70], yields:"spd:2"},
-    "Grimer": {base:[80,80,50,40,50,25], yields:"hp:1"},
-    "Muk": {base:[105,105,75,65,100,50], yields:"hp:1,atk:1"},
-    "Shellder": {base:[30,65,100,45,25,40], yields:"def:1"},
-    "Cloyster": {base:[50,95,180,85,45,70], yields:"def:2"},
-    "Gastly": {base:[30,35,30,100,35,80], yields:"spa:1"},
-    "Haunter": {base:[45,50,45,115,55,95], yields:"spa:2"},
-    "Gengar": {base:[60,65,60,130,75,110], yields:"spa:3"},
-    "Onix": {base:[35,45,160,30,45,70], yields:"def:1"},
-    "Drowzee": {base:[60,48,45,43,90,42], yields:"spd:1"},
-    "Hypno": {base:[85,73,70,73,115,67], yields:"spd:2"},
-    "Krabby": {base:[30,105,90,25,25,50], yields:"atk:1"},
-    "Kingler": {base:[55,130,115,50,50,75], yields:"atk:2"},
-    "Voltorb": {base:[40,30,50,55,55,100], yields:"spe:1"},
-    "Electrode": {base:[60,50,70,80,80,140], yields:"spe:2"},
-    "Exeggcute": {base:[60,40,80,60,45,40], yields:"def:1"},
-    "Exeggutor": {base:[95,95,85,125,65,55], yields:"spa:2"},
-    "Cubone": {base:[50,50,95,40,50,35], yields:"def:1"},
-    "Marowak": {base:[60,80,110,50,80,45], yields:"def:2"},
-    "Hitmonlee": {base:[50,120,53,35,110,87], yields:"atk:2"},
-    "Hitmonchan": {base:[50,105,79,35,110,76], yields:"spd:2"},
-    "Lickitung": {base:[90,55,75,60,75,30], yields:"hp:2"},
-    "Koffing": {base:[40,65,95,60,45,35], yields:"def:1"},
-    "Weezing": {base:[65,90,120,85,70,60], yields:"def:2"},
-    "Rhyhorn": {base:[80,85,95,30,30,25], yields:"def:1"},
-    "Rhydon": {base:[105,130,120,45,45,40], yields:"atk:2"},
-    "Chansey": {base:[250,5,5,35,105,50], yields:"hp:2"},
-    "Tangela": {base:[65,55,115,100,40,60], yields:"def:1"},
-    "Kangaskhan": {base:[105,95,80,40,80,90], yields:"hp:2"},
-    "Horsea": {base:[30,40,70,70,25,60], yields:"spa:1"},
-    "Seadra": {base:[55,65,95,95,45,85], yields:"def:1,spa:1"},
-    "Goldeen": {base:[45,67,60,35,50,63], yields:"atk:1"},
-    "Seaking": {base:[80,92,65,65,80,68], yields:"atk:2"},
-    "Staryu": {base:[30,45,55,70,55,85], yields:"spe:1"},
-    "Starmie": {base:[60,75,85,100,85,115], yields:"spe:2"},
-    "Mr. Mime": {base:[40,45,65,100,120,90], yields:"spd:2"},
-    "Scyther": {base:[70,110,80,55,80,105], yields:"atk:1"},
-    "Jynx": {base:[65,50,35,115,95,95], yields:"spa:2"},
-    "Electabuzz": {base:[65,83,57,95,85,105], yields:"spe:2"},
-    "Magmar": {base:[65,95,57,100,85,93], yields:"spa:2"},
-    "Pinsir": {base:[65,125,100,55,70,85], yields:"atk:2"},
-    "Tauros": {base:[75,100,95,40,70,110], yields:"atk:1,spe:1"},
-    "Magikarp": {base:[20,10,55,15,20,80], yields:"spe:0"},
-    "Gyarados": {base:[95,125,79,60,100,81], yields:"atk:2"},
-    "Lapras": {base:[130,85,80,85,95,60], yields:"hp:2"},
-    "Ditto": {base:[48,48,48,48,48,48], yields:"hp:1"},
-    "Eevee": {base:[55,55,50,45,65,55], yields:"spd:1"},
-    "Vaporeon": {base:[130,65,60,110,95,65], yields:"hp:2"},
-    "Jolteon": {base:[65,65,60,110,95,130], yields:"spe:2"},
-    "Flareon": {base:[65,130,60,95,110,65], yields:"atk:2"},
-    "Porygon": {base:[65,60,70,85,75,40], yields:"spa:1"},
-    "Omanyte": {base:[35,40,100,90,55,35], yields:"def:1"},
-    "Omastar": {base:[70,60,125,115,70,55], yields:"def:2"},
-    "Kabuto": {base:[30,80,90,55,45,55], yields:"def:1"},
-    "Kabutops": {base:[60,115,105,65,70,80], yields:"atk:2"},
-    "Aerodactyl": {base:[80,105,65,60,75,130], yields:"spe:2"},
-    "Snorlax": {base:[160,110,65,65,110,30], yields:"hp:2"},
-    "Articuno": {base:[90,85,100,95,125,85], yields:"spd:3"},
-    "Zapdos": {base:[90,90,85,125,90,100], yields:"spa:3"},
-    "Moltres": {base:[90,100,90,125,85,90], yields:"spa:3"},
-    "Dratini": {base:[41,64,45,50,50,50], yields:"atk:1"},
-    "Dragonair": {base:[61,84,65,70,70,70], yields:"atk:2"},
-    "Dragonite": {base:[91,134,95,100,100,80], yields:"atk:3"},
-    "Mewtwo": {base:[106,110,90,154,90,130], yields:"spa:3"},
-    "Mew": {base:[100,100,100,100,100,100], yields:"hp:3"}
+    "Bulbasaur":[45,49,49,65,65,45],"Ivysaur":[60,62,63,80,80,60],"Venusaur":[80,82,83,100,100,80],"Charmander":[39,52,43,60,50,65],"Charmeleon":[58,64,58,80,65,80],"Charizard":[78,84,78,109,85,100],"Squirtle":[44,48,65,50,64,43],"Wartortle":[59,63,80,65,80,58],"Blastoise":[79,83,100,85,105,78],"Caterpie":[45,30,35,20,20,45],"Metapod":[50,20,55,25,25,30],"Butterfree":[60,45,50,80,80,70],"Weedle":[40,35,30,20,20,50],"Kakuna":[45,25,50,25,25,35],"Beedrill":[65,80,40,45,80,75],"Pidgey":[40,45,40,35,35,56],"Pidgeotto":[63,60,55,50,50,71],"Pidgeot":[83,80,75,70,70,91],"Rattata":[30,56,35,25,35,72],"Raticate":[55,81,60,50,70,97],"Spearow":[40,60,30,31,31,70],"Fearow":[65,90,65,61,61,100],"Ekans":[35,60,44,40,54,55],"Arbok":[60,85,69,65,79,80],"Pikachu":[35,55,30,50,40,90],"Raichu":[60,90,55,90,80,100],"Sandshrew":[50,75,85,20,30,40],"Sandslash":[75,100,110,45,55,65],"Nidoran♀":[55,47,52,40,40,41],"Nidorina":[70,62,67,55,55,56],"Nidoqueen":[90,82,87,75,85,76],"Nidoran♂":[46,57,40,40,40,50],"Nidorino":[61,72,57,55,55,65],"Nidoking":[81,92,77,85,75,85],"Clefairy":[70,45,48,60,65,35],"Clefable":[95,70,73,85,90,60],"Vulpix":[38,41,40,50,65,65],"Ninetales":[73,76,75,81,100,100],"Jigglypuff":[115,45,20,45,25,20],"Wigglytuff":[140,70,45,75,50,45],"Zubat":[40,45,35,30,40,55],"Golbat":[75,80,70,65,75,90],"Oddish":[45,50,55,75,65,30],"Gloom":[60,65,70,85,75,40],"Vileplume":[75,80,85,100,90,50],"Paras":[35,70,55,45,55,25],"Parasect":[60,95,80,60,80,30],"Venonat":[60,55,50,40,55,45],"Venomoth":[70,65,60,90,75,90],"Diglett":[10,55,25,35,45,95],"Dugtrio":[35,80,50,50,70,120],"Meowth":[40,45,35,40,40,90],"Persian":[65,70,60,65,65,115],"Psyduck":[50,52,48,65,50,55],"Golduck":[80,82,78,95,80,85],"Mankey":[40,80,35,35,45,70],"Primeape":[65,105,60,60,70,95],"Growlithe":[55,70,45,70,50,60],"Arcanine":[90,110,80,100,80,95],"Poliwag":[40,50,40,40,40,90],"Poliwhirl":[65,65,65,50,50,90],"Poliwrath":[90,85,95,70,90,70],"Abra":[25,20,15,105,55,90],"Kadabra":[40,35,30,120,70,105],"Alakazam":[55,50,45,135,85,120],"Machop":[70,80,50,35,35,35],"Machoke":[80,100,70,50,50,45],"Machamp":[90,130,80,65,85,55],"Bellsprout":[50,75,35,70,30,40],"Weepinbell":[65,90,50,85,45,55],"Victreebel":[80,105,65,100,60,70],"Tentacool":[40,40,35,50,100,70],"Tentacruel":[80,70,65,80,120,100],"Geodude":[40,80,100,30,30,20],"Graveler":[55,95,115,45,45,35],"Golem":[80,110,130,55,65,45],"Ponyta":[50,85,55,65,65,90],"Rapidash":[65,100,70,80,80,105],"Slowpoke":[90,65,65,40,40,15],"Slowbro":[95,75,110,100,80,30],"Magnemite":[25,35,70,95,55,45],"Magneton":[50,60,95,120,70,70],"Farfetch'd":[52,65,55,58,62,60],"Doduo":[35,85,45,35,35,75],"Dodrio":[60,110,70,60,60,100],"Seel":[65,45,55,45,70,45],"Dewgong":[90,70,80,70,95,70],"Grimer":[80,80,50,40,50,25],"Muk":[105,105,75,65,100,50],"Shellder":[30,65,100,45,25,40],"Cloyster":[50,95,180,85,45,70],"Gastly":[30,35,30,100,35,80],"Haunter":[45,50,45,115,55,95],"Gengar":[60,65,60,130,75,110],"Onix":[35,45,160,30,45,70],"Drowzee":[60,48,45,43,90,42],"Hypno":[85,73,70,73,115,67],"Krabby":[30,105,90,25,25,50],"Kingler":[55,130,115,50,50,75],"Voltorb":[40,30,50,55,55,100],"Electrode":[60,50,70,80,80,140],"Exeggcute":[60,40,80,60,45,40],"Exeggutor":[95,95,85,125,65,55],"Cubone":[50,50,95,40,50,35],"Marowak":[60,80,110,50,80,45],"Hitmonlee":[50,120,53,35,110,87],"Hitmonchan":[50,105,79,35,110,76],"Lickitung":[90,55,75,60,75,30],"Koffing":[40,65,95,60,45,35],"Weezing":[65,90,120,85,70,60],"Rhyhorn":[80,85,95,30,30,25],"Rhydon":[105,130,120,45,45,40],"Chansey":[250,5,5,35,105,50],"Tangela":[65,55,115,100,40,60],"Kangaskhan":[105,95,80,40,80,90],"Horsea":[30,40,70,70,25,60],"Seadra":[55,65,95,95,45,85],"Goldeen":[45,67,60,35,50,63],"Seaking":[80,92,65,65,80,68],"Staryu":[30,45,55,70,55,85],"Starmie":[60,75,85,100,85,115],"Mr. Mime":[40,45,65,100,120,90],"Scyther":[70,110,80,55,80,105],"Jynx":[65,50,35,115,95,95],"Electabuzz":[65,83,57,95,85,105],"Magmar":[65,95,57,100,85,93],"Pinsir":[65,125,100,55,70,85],"Tauros":[75,100,95,40,70,110],"Magikarp":[20,10,55,15,20,80],"Gyarados":[95,125,79,60,100,81],"Lapras":[130,85,80,85,95,60],"Ditto":[48,48,48,48,48,48],"Eevee":[55,55,50,45,65,55],"Vaporeon":[130,65,60,110,95,65],"Jolteon":[65,65,60,110,95,130],"Flareon":[65,130,60,95,110,65],"Porygon":[65,60,70,85,75,40],"Omanyte":[35,40,100,90,55,35],"Omastar":[70,60,125,115,70,55],"Kabuto":[30,80,90,55,45,55],"Kabutops":[60,115,105,65,70,80],"Aerodactyl":[80,105,65,60,75,130],"Snorlax":[160,110,65,65,110,30],"Articuno":[90,85,100,95,125,85],"Zapdos":[90,90,85,125,90,100],"Moltres":[90,100,90,125,85,90],"Dratini":[41,64,45,50,50,50],"Dragonair":[61,84,65,70,70,70],"Dragonite":[91,134,95,100,100,80],"Mewtwo":[106,110,90,154,90,130],"Mew":[100,100,100,100,100,100]
 };
 
 const natures = {
-    Adamant:{atk:1.1,spa:0.9}, Brave:{atk:1.1,spe:0.9}, Lonely:{atk:1.1,def:0.9}, Naughty:{atk:1.1,spd:0.9},
-    Bold:{def:1.1,atk:0.9}, Impish:{def:1.1,spa:0.9}, Lax:{def:1.1,spd:0.9}, Relaxed:{def:1.1,spe:0.9},
-    Modest:{spa:1.1,atk:0.9}, Mild:{spa:1.1,def:0.9}, Quiet:{spa:1.1,spe:0.9}, Rash:{spa:1.1,spd:0.9},
-    Calm:{spd:1.1,atk:0.9}, Careful:{spd:1.1,spa:0.9}, Gentle:{spd:1.1,def:0.9}, Sassy:{spd:1.1,spe:0.9},
-    Timid:{spe:1.1,atk:0.9}, Hasty:{spe:1.1,def:0.9}, Jolly:{spe:1.1,spa:0.9}, Naive:{spe:1.1,spd:0.9},
-    Hardy:{}, Docile:{}, Serious:{}, Bashful:{}, Quirky:{}
+    Adamant:{atk:1.1,spa:0.9}, Bashful:{}, Bold:{def:1.1,atk:0.9}, Brave:{atk:1.1,spe:0.9}, Calm:{spd:1.1,atk:0.9}, Careful:{spd:1.1,spa:0.9}, Docile:{}, Gentle:{spd:1.1,def:0.9}, Hardy:{}, Hasty:{spe:1.1,def:0.9}, Impish:{def:1.1,spa:0.9}, Jolly:{spe:1.1,spa:0.9}, Lax:{def:1.1,spd:0.9}, Lonely:{atk:1.1,def:0.9}, Mild:{spa:1.1,def:0.9}, Modest:{spa:1.1,atk:0.9}, Naive:{spe:1.1,spd:0.9}, Naughty:{atk:1.1,spd:0.9}, Quiet:{spa:1.1,spe:0.9}, Quirky:{}, Rash:{spa:1.1,spd:0.9}, Relaxed:{def:1.1,spe:0.9}, Sassy:{spd:1.1,spe:0.9}, Serious:{}, Timid:{spe:1.1,atk:0.9}
 };
 
-// Fill the dropdowns
-const myPkmnSel = document.getElementById('myPkmn');
-const foeListSel = document.getElementById('foeList');
-const natureSel = document.getElementById('natureSel');
+const pSel = document.getElementById('myPkmn');
+const nSel = document.getElementById('natureSel');
+Object.keys(pkmnData).forEach(p => pSel.add(new Option(p,p)));
+Object.keys(natures).forEach(n => nSel.add(new Option(n,n)));
 
-Object.keys(pkmnData).sort().forEach(name => {
-    myPkmnSel.add(new Option(name, name));
-    foeListSel.add(new Option(`${name} (${pkmnData[name].yields})`, pkmnData[name].yields));
-});
-
-Object.keys(natures).sort().forEach(n => natureSel.add(new Option(n, n)));
-
-let player = { ivs: {}, evs: {hp:0, atk:0, def:0, spa:0, spd:0, spe:0} };
-
-function calculateDNA() {
+function runAudit() {
     const lvl = parseInt(document.getElementById('lvl').value);
-    const nat = natures[natureSel.value];
-    const species = pkmnData[myPkmnSel.value].base;
+    const nature = natures[nSel.value];
+    const base = pkmnData[pSel.value];
     const stats = [
-        parseInt(document.getElementById('sHP').value || 0), parseInt(document.getElementById('sAtk').value || 0),
-        parseInt(document.getElementById('sDef').value || 0), parseInt(document.getElementById('sSpA').value || 0),
-        parseInt(document.getElementById('sSpD').value || 0), parseInt(document.getElementById('sSpe').value || 0)
+        parseInt(document.getElementById('sHP').value), parseInt(document.getElementById('sAtk').value),
+        parseInt(document.getElementById('sDef').value), parseInt(document.getElementById('sSpA').value),
+        parseInt(document.getElementById('sSpD').value), parseInt(document.getElementById('sSpe').value)
     ];
 
-    player.ivs.hp = Math.round(((stats[0] - lvl - 10) * 100 / lvl) - 2 * species[0]);
-    const keys = ['atk', 'def', 'spa', 'spd', 'spe'];
-    keys.forEach((k, i) => {
-        let m = nat[k] || 1.0;
-        player.ivs[k] = Math.round((Math.ceil(stats[i+1] / m) - 5) * 100 / lvl) - 2 * species[i+1];
-    });
-    render();
-}
+    let output = "<b>AUDIT LOG (LEVEL "+lvl+"):</b><br>";
+    const labels = ['HP', 'ATK', 'DEF', 'SPA', 'SPD', 'SPE'];
 
-function logBattle() {
-    const yieldStr = foeListSel.value;
-    const count = parseInt(document.getElementById('qty').value);
-    yieldStr.split(',').forEach(part => {
-        const [stat, val] = part.split(':');
-        player.evs[stat] = Math.min(255, player.evs[stat] + (parseInt(val) * count));
-    });
-    render();
-}
+    labels.forEach((label, i) => {
+        let possible = [];
+        let multiplier = nature[label.toLowerCase()] || 1.0;
 
-function render() {
-    let html = "<b>DNA & TRAINING REPORT:</b><br>";
-    ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].forEach(k => {
-        html += `<div class="stat-line"><span>${k.toUpperCase()}</span> <span>IV: <span class="iv-val">${player.ivs[k] ?? '??'}</span> | EV: <span class="ev-val">${player.evs[k]}</span></span></div>`;
+        for (let iv = 0; iv <= 31; iv++) {
+            let val;
+            if (i === 0) {
+                val = Math.floor(((base[i] * 2 + iv) * lvl) / 100) + lvl + 10;
+            } else {
+                val = Math.floor((Math.floor(((base[i] * 2 + iv) * lvl) / 100) + 5) * multiplier);
+            }
+            if (val === stats[i]) possible.push(iv);
+        }
+
+        let range = possible.length > 0 ? (possible[0] === possible[possible.length-1] ? possible[0] : possible[0] + "-" + possible[possible.length-1]) : "INV";
+        let colorClass = (possible[possible.length-1] > 25) ? "high-iv" : "";
+        output += `<div class="stat-line"><span>${label}</span> <span class="iv-range ${colorClass}">${range}</span></div>`;
     });
-    document.getElementById('auditDisplay').innerHTML = html;
+
+    document.getElementById('auditDisplay').innerHTML = output;
 }
 </script>
 </body>
